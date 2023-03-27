@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -18,6 +19,18 @@ class _LoginPageState extends State<LoginPage> {
   String loginButtonText = "Login";
 
   @override
+  void initState() {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.dark,
+        statusBarColor: Colors.transparent,
+      ),
+    );
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -29,6 +42,9 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const Spacer(),
+                  Image.asset("assets/png/icon.png", height: 250),
+                  const Spacer(),
                   TextFormField(
                     controller: _username,
                     decoration: const InputDecoration(
@@ -109,6 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
+                  const Spacer(),
                 ],
               ),
             ),
