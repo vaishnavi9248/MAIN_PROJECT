@@ -166,9 +166,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> successLogin() async {
     SharedPref().setBool(key: PreferenceKey.isLoggedIn, value: true);
 
-    print(
-        "saved value ${await SharedPref().getBool(key: PreferenceKey.isLoggedIn)}");
-
     showCustomSnackBar(context: context, message: "Successfully logged-in");
 
     Navigator.pushAndRemoveUntil(

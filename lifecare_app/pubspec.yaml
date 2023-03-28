@@ -12,6 +12,7 @@ dependencies:
 
   cupertino_icons: ^1.0.5
   shared_preferences: ^2.0.20
+  chart_sparkline: ^1.0.13
 
 dev_dependencies:
   flutter_test:
