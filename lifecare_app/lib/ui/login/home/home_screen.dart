@@ -26,6 +26,16 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
+  void generateCountList() {
+    heartBeatList =
+        List.generate(50, (_) => 60 + random.nextDouble() * (100 - 60));
+
+    temperatureList = List.generate(
+        50,
+        (_) => double.parse(
+            (36.1 + random.nextDouble() * (37.2 - 36.1)).toStringAsFixed(2)));
+  }
+
   void updateHeartBeat() {
     Timer.periodic(const Duration(milliseconds: 1500), (timer) {
       Random random = Random();
@@ -46,16 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
       temperatureList.add(newTempe);
       setState(() {});
     });
-  }
-
-  void generateCountList() {
-    heartBeatList =
-        List.generate(30, (_) => 60 + random.nextDouble() * (100 - 60));
-
-    temperatureList = List.generate(
-        30,
-        (_) => double.parse(
-            (36.1 + random.nextDouble() * (37.2 - 36.1)).toStringAsFixed(2)));
   }
 
   @override
@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 4.0),
                 Text(
-                  "${heartBeatList.last} BPM",
+                  "  ${heartBeatList.last.round()} BPM",
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 18.0),
                 ),
