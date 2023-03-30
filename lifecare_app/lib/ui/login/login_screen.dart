@@ -171,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.pushAndRemoveUntil(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation1, animation2) => const HomeScreen(),
+        pageBuilder: (context, animation1, animation2) => HomeScreen(),
         transitionsBuilder: (context, animation1, animation2, child) {
           const begin = Offset(0.0, 1.0);
           const end = Offset.zero;
