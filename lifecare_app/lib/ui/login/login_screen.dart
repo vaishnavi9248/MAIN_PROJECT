@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:lifecare/const/preference_key.dart';
 import 'package:lifecare/data/services/shared_pref.dart';
-import 'package:lifecare/ui/login/home/home_screen.dart';
+import 'package:lifecare/ui/home/home_screen.dart';
 import 'package:lifecare/util/show_custom_snackbar.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -143,50 +144,53 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _onSubmit() async {
-    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      FocusScope.of(context).requestFocus(FocusNode());
-
-      setState(() => _loginButtonText = "Loading...");
-      await Future.delayed(const Duration(seconds: 1));
-
-      if (_username.text == "Admin" && _password.text == "Admin@123") {
-        setState(() => _loginButtonText = "Please wait...");
-        await Future.delayed(const Duration(seconds: 1));
-
-        successLogin();
-      } else {
-        setState(() => _loginButtonText = "Login");
-
-        // ignore: use_build_context_synchronously
-        showCustomSnackBar(context: context, message: "Invalid password");
-      }
-    }
+    successLogin();
+    // if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+    //   FocusScope.of(context).requestFocus(FocusNode());
+    //
+    //   setState(() => _loginButtonText = "Loading...");
+    //   await Future.delayed(const Duration(seconds: 1));
+    //
+    //   if (_username.text == "Admin" && _password.text == "Admin@123") {
+    //     setState(() => _loginButtonText = "Please wait...");
+    //     await Future.delayed(const Duration(seconds: 1));
+    //
+    //     successLogin();
+    //   } else {
+    //     setState(() => _loginButtonText = "Login");
+    //
+    //     // ignore: use_build_context_synchronously
+    //     showCustomSnackBar(message: "Invalid password");
+    //   }
+    // }
   }
 
   Future<void> successLogin() async {
     SharedPref().setBool(key: PreferenceKey.isLoggedIn, value: true);
 
-    showCustomSnackBar(context: context, message: "Successfully logged-in");
+    showCustomSnackBar(message: "Successfully logged-in");
 
-    Navigator.pushAndRemoveUntil(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation1, animation2) => HomeScreen(),
-        transitionsBuilder: (context, animation1, animation2, child) {
-          const begin = Offset(0.0, 1.0);
-          const end = Offset.zero;
-          const curve = Curves.ease;
+    Get.offAll(() => HomeScreen());
 
-          var tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-          return SlideTransition(
-            position: animation1.drive(tween),
-            child: child,
-          );
-        },
-      ),
-      (route) => false,
-    );
+    // Navigator.pushAndRemoveUntil(
+    //   context,
+    //   PageRouteBuilder(
+    //     pageBuilder: (context, animation1, animation2) => HomeScreen(),
+    //     transitionsBuilder: (context, animation1, animation2, child) {
+    //       const begin = Offset(0.0, 1.0);
+    //       const end = Offset.zero;
+    //       const curve = Curves.ease;
+    //
+    //       var tween =
+    //           Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+    //
+    //       return SlideTransition(
+    //         position: animation1.drive(tween),
+    //         child: child,
+    //       );
+    //     },
+    //   ),
+    //   (route) => false,
+    // );
   }
 }

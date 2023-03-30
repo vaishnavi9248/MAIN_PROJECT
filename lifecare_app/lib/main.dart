@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lifecare/const/preference_key.dart';
 import 'package:lifecare/data/services/shared_pref.dart';
-import 'package:lifecare/ui/login/home/home_screen.dart';
+import 'package:lifecare/ui/home/home_screen.dart';
 import 'package:lifecare/ui/login/login_screen.dart';
 
 Future<void> main() async {

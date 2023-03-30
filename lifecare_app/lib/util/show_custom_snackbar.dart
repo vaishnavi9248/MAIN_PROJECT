@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-void showCustomSnackBar({
-  required BuildContext context,
-  required String message,
-}) =>
-    ScaffoldMessenger.of(context)
+void showCustomSnackBar({required String message}) =>
+    ScaffoldMessenger.of(Get.context!)
         .showSnackBar(SnackBar(content: Text(message)));
