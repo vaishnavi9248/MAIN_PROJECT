@@ -11,7 +11,14 @@ class HospitalScreen extends StatefulWidget {
 }
 
 class _HospitalScreenState extends State<HospitalScreen> {
-  TextEditingController controller = TextEditingController();
+  List<HospitalModel> hospitalList = [];
+
+  @override
+  void initState() {
+    hospitalList = hospitalGLobalList;
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +38,20 @@ class _HospitalScreenState extends State<HospitalScreen> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
-                controller: controller,
                 onChanged: (String value) {
-                  //
+                  if (value.isEmpty) {
+                    hospitalList = hospitalGLobalList;
+                  } else {
+                    hospitalList = hospitalGLobalList
+                        .where((element) => element.location
+                            .toLowerCase()
+                            .contains(value.toLowerCase()))
+                        .toList();
+                  }
+                  setState(() {});
                 },
                 decoration: const InputDecoration(
-                  hintText: "Search",
+                  hintText: "Search with location...",
                   prefixIcon: Icon(Icons.search),
                   border: OutlineInputBorder(),
                 ),

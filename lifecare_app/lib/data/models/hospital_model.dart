@@ -11,7 +11,7 @@ class HospitalModel {
   });
 }
 
-List<HospitalModel> hospitalList = [
+List<HospitalModel> hospitalGLobalList = [
   HospitalModel(
     name: "Taluk Hospital",
     phone: "0494 260 8282",

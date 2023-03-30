@@ -144,53 +144,26 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _onSubmit() async {
-    successLogin();
-    // if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-    //   FocusScope.of(context).requestFocus(FocusNode());
-    //
-    //   setState(() => _loginButtonText = "Loading...");
-    //   await Future.delayed(const Duration(seconds: 1));
-    //
-    //   if (_username.text == "Admin" && _password.text == "Admin@123") {
-    //     setState(() => _loginButtonText = "Please wait...");
-    //     await Future.delayed(const Duration(seconds: 1));
-    //
-    //     successLogin();
-    //   } else {
-    //     setState(() => _loginButtonText = "Login");
-    //
-    //     // ignore: use_build_context_synchronously
-    //     showCustomSnackBar(message: "Invalid password");
-    //   }
-    // }
-  }
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+      FocusScope.of(context).requestFocus(FocusNode());
 
-  Future<void> successLogin() async {
-    SharedPref().setBool(key: PreferenceKey.isLoggedIn, value: true);
+      setState(() => _loginButtonText = "Loading...");
+      await Future.delayed(const Duration(seconds: 1));
 
-    showCustomSnackBar(message: "Successfully logged-in");
+      if (_username.text == "Admin" && _password.text == "Admin@123") {
+        setState(() => _loginButtonText = "Please wait...");
+        await Future.delayed(const Duration(seconds: 1));
 
-    Get.offAll(() => HomeScreen());
+        SharedPref().setBool(key: PreferenceKey.isLoggedIn, value: true);
 
-    // Navigator.pushAndRemoveUntil(
-    //   context,
-    //   PageRouteBuilder(
-    //     pageBuilder: (context, animation1, animation2) => HomeScreen(),
-    //     transitionsBuilder: (context, animation1, animation2, child) {
-    //       const begin = Offset(0.0, 1.0);
-    //       const end = Offset.zero;
-    //       const curve = Curves.ease;
-    //
-    //       var tween =
-    //           Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-    //
-    //       return SlideTransition(
-    //         position: animation1.drive(tween),
-    //         child: child,
-    //       );
-    //     },
-    //   ),
-    //   (route) => false,
-    // );
+        showCustomSnackBar(message: "Successfully logged-in");
+
+        Get.offAll(() => HomeScreen());
+      } else {
+        setState(() => _loginButtonText = "Login");
+
+        showCustomSnackBar(message: "Invalid password");
+      }
+    }
   }
 }
