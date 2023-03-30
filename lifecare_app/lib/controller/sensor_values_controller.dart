@@ -24,7 +24,7 @@ class SensorValuesController extends GetxController {
     // generateCountList();
     // updateHeartBeat();
     // updateTemperature();
-    updateSensorValues();
+    //updateSensorValues();
     super.onInit();
   }
 
