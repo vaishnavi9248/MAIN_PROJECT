@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:lifecare/const/preference_key.dart';
 import 'package:lifecare/controller/sensor_values_controller.dart';
 import 'package:lifecare/data/services/shared_pref.dart';
+import 'package:lifecare/ui/contacts/contacts_screen.dart';
 import 'package:lifecare/ui/history/history_screen.dart';
 import 'package:lifecare/ui/hospitals/hospital_screen.dart';
 import 'package:lifecare/ui/login/login_screen.dart';
@@ -45,8 +46,12 @@ class HomeScreen extends StatelessWidget {
                     await Future.delayed(const Duration(milliseconds: 1));
                     Get.to(() => const HospitalScreen());
                   }),
-              PopupMenuItem(child: const Text("Contacts"), onTap: () {}),
-              PopupMenuItem(child: const Text("Appointment"), onTap: () {}),
+              PopupMenuItem(
+                  child: const Text("Contacts"),
+                  onTap: () async {
+                    await Future.delayed(const Duration(milliseconds: 1));
+                    Get.to(() => const ContactsScreen());
+                  }),
               PopupMenuItem(
                   child: const Text("Sign-out"),
                   onTap: () async {

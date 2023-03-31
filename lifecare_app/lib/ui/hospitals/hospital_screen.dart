@@ -43,15 +43,23 @@ class _HospitalScreenState extends State<HospitalScreen> {
                     hospitalList = hospitalGLobalList;
                   } else {
                     hospitalList = hospitalGLobalList
-                        .where((element) => element.location
-                            .toLowerCase()
-                            .contains(value.toLowerCase()))
+                        .where((element) =>
+                            element.location
+                                .toLowerCase()
+                                .contains(value.toLowerCase()) ||
+                            element.name
+                                .toLowerCase()
+                                .contains(value.toLowerCase()) ||
+                            element.pinCode
+                                .toString()
+                                .toLowerCase()
+                                .contains(value.toLowerCase()))
                         .toList();
                   }
                   setState(() {});
                 },
                 decoration: const InputDecoration(
-                  hintText: "Search with location...",
+                  hintText: "Search by name, location, pincode...",
                   prefixIcon: Icon(Icons.search),
                   border: OutlineInputBorder(),
                 ),
