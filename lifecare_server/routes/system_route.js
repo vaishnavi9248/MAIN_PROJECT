@@ -2,8 +2,14 @@ const router = require("express").Router();
 
 const controller = require("../controller/system_controller");
 
-router.post("/temperature", controller.temperatureValue);
+router.get("/temperature", controller.getTemperatureHistory);
 
-router.post("/heartbeat", controller.heartbeatValue);
+router.post("/temperature", controller.addTemperature);
+
+router.get("/heartbeat", controller.getHeartBeatHistory);
+
+router.post("/heartbeat", controller.addHeartbeat);
+
+router.get("/pushButton", controller.pushButtonClicked);
 
 module.exports = router;

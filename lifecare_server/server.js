@@ -28,6 +28,8 @@ app.use((req, res, next) => {
 
 //api routes
 app.use(require("./routes/system_route"));
+app.use(require("./routes/common_route"));
+app.use(require("./routes/hospital_route"));
 
 //invalid api
 app.get("*", (req, res) => {

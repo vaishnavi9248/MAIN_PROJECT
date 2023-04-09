@@ -1,9 +1,21 @@
-const mongoose = require("mongoose");
-
 var Temperature = require("../models/sensor_value_module").temperature;
 var Heartbeat = require("../models/sensor_value_module").heartbeat;
 
-const temperatureValue = (req, res) => {
+const getTemperatureHistory = (req, res) => {
+  Temperature.find()
+    .select("-__v")
+    .then((data) => {
+      const result = {
+        count: data.length,
+        data: data,
+      };
+
+      console.log(req.url, " ", req.method, " ", result);
+      return res.json(result);
+    });
+};
+
+const addTemperature = (req, res) => {
   const { value } = req.body;
 
   if (!value) {
@@ -29,7 +41,21 @@ const temperatureValue = (req, res) => {
   });
 };
 
-const heartbeatValue = (req, res) => {
+const getHeartBeatHistory = (req, res) => {
+  Heartbeat.find()
+    .select("-__v")
+    .then((data) => {
+      const result = {
+        count: data.length,
+        data: data,
+      };
+
+      console.log(req.url, " ", req.method, " ", result);
+      return res.json(result);
+    });
+};
+
+const addHeartbeat = (req, res) => {
   const { value } = req.body;
 
   if (!value) {
@@ -56,7 +82,22 @@ const heartbeatValue = (req, res) => {
   });
 };
 
+const pushButtonClicked = (req, res) => {
+  //add logic for alert send
+
+  const result = {
+    message: "push alert send",
+  };
+
+  console.log(req.url, " ", req.method, "", result);
+
+  res.json(result);
+};
+
 module.exports = {
-  temperatureValue,
-  heartbeatValue,
+  addTemperature,
+  getTemperatureHistory,
+  addHeartbeat,
+  getHeartBeatHistory,
+  pushButtonClicked,
 };

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const moment = require("moment");
 
-const sensor_value = new mongoose.Schema({
+const sensorValue = new mongoose.Schema({
   value: {
     type: Number,
     required: true,
@@ -11,9 +11,9 @@ const sensor_value = new mongoose.Schema({
   createdAt: { type: Date, required: true, default: moment().format() },
 });
 
-var temperature = mongoose.model("temperature", sensor_value);
+const temperature = mongoose.model("temperature", sensorValue);
 
-var heartbeat = mongoose.model("heartbeat", sensor_value);
+const heartbeat = mongoose.model("heartbeat", sensorValue);
 
 module.exports = {
   temperature,
