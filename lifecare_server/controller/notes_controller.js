@@ -102,7 +102,7 @@ const getAllDocsById = (req, res) => {
     });
 };
 
-const addDoc = async (req, res) => {
+const addDoc = (req, res) => {
   const { noteId, name, url } = req.body;
 
   if (!noteId || !name || !url) {
