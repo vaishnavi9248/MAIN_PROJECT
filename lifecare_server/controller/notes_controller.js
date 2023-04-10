@@ -102,14 +102,14 @@ const getAllDocsById = (req, res) => {
     });
 };
 
-const addDoc = (req, res) => {
+const addDoc = async (req, res) => {
   const { noteId, name, url } = req.body;
 
   if (!noteId || !name || !url) {
     let errorMap = {};
-    if (!noteId) errorMap.id = "noteId is required";
+    if (!noteId) errorMap.noteId = "noteId is required";
     if (!name) errorMap.name = "name is required";
-    if (!url) errorMap.url = "url is required";
+    if (!url) errorMap.image = "Image is required";
 
     console.log(req.url, " ", req.method, "", errorMap);
 

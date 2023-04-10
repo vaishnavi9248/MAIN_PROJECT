@@ -14,14 +14,13 @@ const addFCM = (req, res) => {
     return res.status(422).json(errorMap);
   }
 
-  const newDeviceId = new FCMToken({
-    deviceId,
-    token,
-  });
+  var query = { deviceId },
+    update = { token },
+    options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
-  newDeviceId.save().then((data) => {
+  FCMToken.findOneAndUpdate(query, update, options).then((data) => {
     const result = {
-      message: "Successfully device id added",
+      message: "Successfully device added",
       data: data,
     };
 

@@ -7,11 +7,16 @@ const io = require("socket.io")(http);
 
 const key = require("./key");
 
+const admin = require("firebase-admin");
+
+const serviceAccount = require("./firebase-adminSdk.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
 //mongodb connection
 require("./data/services/database_service");
-
-//mongoose schema
-require("./models/sensor_value_module");
 
 app.use(express.json());
 
