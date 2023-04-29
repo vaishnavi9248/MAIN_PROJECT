@@ -66,6 +66,17 @@ app.put("*", (req, res) => {
 io.on("connection", (socket) => {
   //update user status and socket id
   // userController.onUserConnect(socket, io);
+  console.log(`on connect`);
+
+  setInterval(() => {
+    let randomNumber = (Math.random() * (99 - 97) + 97).toFixed(2);
+    socket.emit("humidity", { value: randomNumber });
+  }, 1500);
+
+  setInterval(() => {
+    let randomNumber = Math.floor(Math.random() * 41) + 60;
+    socket.emit("heartbeat", { value: randomNumber });
+  }, 1000);
 
   socket.on("connect_error", (err) =>
     console.log(`connect_error due to ${err.message}`)
@@ -74,6 +85,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     //update last seen, status, socketId
     // userController.disconnectUser(socket, io);
+    console.log(`on disconnect`);
   });
 
   //socket connection
