@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lifecare/const/preference_key.dart';
 import 'package:lifecare/controller/sensor_values_controller.dart';
+import 'package:lifecare/controller/socket_controller.dart';
 import 'package:lifecare/data/services/shared_pref.dart';
 import 'package:lifecare/ui/contacts/contacts_screen.dart';
 import 'package:lifecare/ui/history/history_screen.dart';
@@ -16,6 +17,8 @@ class HomeScreen extends StatelessWidget {
 
   final SensorValuesController sensorValueController =
       Get.put(SensorValuesController());
+
+  final SocketController socketController = Get.put(SocketController());
 
   @override
   Widget build(BuildContext context) {
