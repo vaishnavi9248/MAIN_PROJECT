@@ -5,7 +5,7 @@
 #define WIFI_SSID "realme 5i"
 #define WIFI_PASSWORD "pewo9080"
 
-#define SERVER_URL "http://192.168.43.239:5678"
+#define SERVER_URL "http://192.168.43.57:5678"
 
 #define PULSE_SENSOR_PIN A0
 #define LED_PIN D1
