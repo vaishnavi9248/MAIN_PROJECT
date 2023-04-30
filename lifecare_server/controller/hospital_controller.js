@@ -31,12 +31,16 @@ const addHospital = (req, res) => {
     return res.status(422).json(errorMap);
   }
 
+  function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(find, "g"), replace);
+  }
+
   const hospital = new Hospital({
     name,
     address,
     location,
-    phone: phone.replaceAll(" ", ""),
-    pinCode: pinCode.replaceAll(" ", ""),
+    phone: replaceAll(phone, " ", ""),
+    pinCode: replaceAll(pinCode, " ", ""),
   });
 
   hospital.save().then((data) => {
