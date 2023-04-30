@@ -28,9 +28,13 @@ const addContact = (req, res) => {
     return res.status(422).json(errorMap);
   }
 
+  function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(find, "g"), replace);
+  }
+
   const contact = new Contact({
     name,
-    phone: phone.replaceAll(" ", ""),
+    phone: replaceAll(phone, " ", ""),
   });
 
   contact.save().then((data) => {
