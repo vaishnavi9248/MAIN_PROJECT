@@ -1,5 +1,8 @@
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:lifecare/const/config_key.dart';
+import 'package:lifecare/controller/common_controller.dart';
 import 'package:lifecare/controller/sensor_values_controller.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
@@ -12,6 +15,7 @@ class SocketController extends GetxController {
   @override
   void onInit() {
     connectToSocket();
+    addFcm();
     super.onInit();
   }
 
@@ -28,8 +32,21 @@ class SocketController extends GetxController {
     });
 
     socket.onAny((event, data) {
+      // print("event $event data $data");
+    });
+
+    socket.on("newHeartBeat", (data) {
       sensorValueController.updateSensorValues(
-          value: double.parse(data["value"].toString()));
+        heartBeat: double.parse(data["data"]["value"].toString()),
+        temperature: 0.0,
+      );
+    });
+
+    socket.on("newTemperature", (data) {
+      sensorValueController.updateSensorValues(
+        heartBeat: 0.0,
+        temperature: double.parse(data["data"]["value"].toString()),
+      );
     });
 
     //receive new messages
@@ -45,5 +62,25 @@ class SocketController extends GetxController {
   void _connectionError(dynamic data) {
     print("socket connection error $data");
     //connectToSocket();
+  }
+
+  Future<void> addFcm() async {
+    final CommonController commonController = Get.put(CommonController());
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+
+    String deviceId = androidInfo.id;
+    String token = await messaging.getToken() ?? "";
+
+    if (token.isNotEmpty && deviceId.isNotEmpty) {
+      Map body = {
+        "deviceId": deviceId,
+        "token": token,
+      };
+
+      commonController.addFcm(body);
+    }
   }
 }

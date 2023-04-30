@@ -10,13 +10,24 @@ class SensorValuesController extends GetxController {
     )
   ].obs;
 
-  void updateSensorValues({required double value}) {
+  void updateSensorValues({
+    required double heartBeat,
+    required double temperature,
+  }) {
     if (sensorsValues.length >= 40) sensorsValues.removeAt(0);
+
+    if (heartBeat == 0.0 && sensorsValues.isNotEmpty) {
+      heartBeat = sensorsValues.last.heartBeat;
+    }
+
+    if (temperature == 0.0 && sensorsValues.isNotEmpty) {
+      temperature = sensorsValues.last.temperature;
+    }
 
     sensorsValues.add(
       SensorsValueModel(
-        heartBeat: value,
-        temperature: value,
+        heartBeat: heartBeat,
+        temperature: temperature,
         dateTime: DateTime.now(),
       ),
     );
