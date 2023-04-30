@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "555763540235",
+    "project_id": "lifecare-795dc",
+    "storage_bucket": "lifecare-795dc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555763540235:android:0f5f1e6dd57f015108820e",
+        "android_client_info": {
+          "package_name": "com.mes.lifecare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "555763540235-fis6qmbgmp849mj7de32bkkd1s2vc4gh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWZQF4mHTC4jMeHW3d1dh_Jn4sd2dHdzk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "555763540235-fis6qmbgmp849mj7de32bkkd1s2vc4gh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
