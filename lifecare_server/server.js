@@ -28,6 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   req.io = io;
   req.serverIp = key.SERVER_URL;
+  req.admin = admin;
   return next();
 });
 
@@ -59,36 +60,17 @@ app.put("*", (req, res) => {
   res.status(401).json({ error: "Invalid Request" });
 });
 
-//socket middleware
-// io.use(require("./middleware/socket_auth"));
-
 //socket connection
 io.on("connection", (socket) => {
-  //update user status and socket id
-  // userController.onUserConnect(socket, io);
   console.log(`on connect`);
-
-  setInterval(() => {
-    let randomNumber = (Math.random() * (99 - 97) + 97).toFixed(2);
-    socket.emit("humidity", { value: randomNumber });
-  }, 1500);
-
-  setInterval(() => {
-    let randomNumber = Math.floor(Math.random() * 41) + 60;
-    socket.emit("heartbeat", { value: randomNumber });
-  }, 1000);
 
   socket.on("connect_error", (err) =>
     console.log(`connect_error due to ${err.message}`)
   );
 
   socket.on("disconnect", () => {
-    //update last seen, status, socketId
-    // userController.disconnectUser(socket, io);
     console.log(`on disconnect`);
   });
-
-  //socket connection
 });
 
 http.listen(5678, () => console.log("server running..."));
