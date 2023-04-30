@@ -4,7 +4,7 @@ const key = require("../../key");
 // mongoose connection
 mongoose.connect(key.MONGO_URL, {
   useNewUrlParser: true,
-  dbName: "lifecare",
+  dbName: key.DB_NAME,
 });
 
 mongoose.connection.on("connected", () => console.log("Connected to mongodb"));

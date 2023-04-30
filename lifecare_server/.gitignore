@@ -1,4 +1,4 @@
 /node_modules
 /package-lock.json
-# /firebase-adminSdk.json
-# /key.js
+/firebase-adminSdk.json
+/key.js
