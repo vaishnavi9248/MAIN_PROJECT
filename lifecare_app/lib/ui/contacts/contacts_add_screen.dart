@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lifecare/data/models/contacts_module.dart';
+import 'package:lifecare/data/models/contacts_model.dart';
 
 class ContactsAddScreen extends StatefulWidget {
   const ContactsAddScreen({Key? key, this.contactsModule}) : super(key: key);
 
-  final ContactsModule? contactsModule;
+  final ContactsModel? contactsModule;
 
   @override
   State<ContactsAddScreen> createState() => _ContactsAddScreenState();
@@ -107,7 +107,7 @@ class _ContactsAddScreenState extends State<ContactsAddScreen> {
                                   nameController.text ||
                               widget.contactsModule?.number.toString() !=
                                   numberController.text) {
-                            ContactsModule contact = ContactsModule(
+                            ContactsModel contact = ContactsModel(
                               id: widget.contactsModule?.id ?? "",
                               name: nameController.text,
                               number: int.parse(numberController.text),
@@ -131,7 +131,7 @@ class _ContactsAddScreenState extends State<ContactsAddScreen> {
                             minimumSize: const Size.fromHeight(50),
                             backgroundColor: Colors.red),
                         onPressed: () {
-                          ContactsModule contact = ContactsModule(
+                          ContactsModel contact = ContactsModel(
                             id: "delete",
                             name: "",
                             number: 0,

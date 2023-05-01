@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:lifecare/data/models/contacts_module.dart';
+import 'package:lifecare/data/models/contacts_model.dart';
 import 'package:lifecare/data/repository/contact_repository.dart';
 import 'package:lifecare/ui/contacts/contacts_add_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,7 +14,7 @@ class ContactsScreen extends StatefulWidget {
 }
 
 class _ContactsScreenState extends State<ContactsScreen> {
-  List<ContactsModule> contactsList = [];
+  List<ContactsModel> contactsList = [];
 
   TextEditingController controller = TextEditingController();
 
@@ -22,10 +22,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
   bool loading = true;
 
-  List<ContactsModule> contactsGlobalList = [
-    ContactsModule(name: "Police Station", number: 100),
-    ContactsModule(name: "Fire Station", number: 101),
-    ContactsModule(name: "Ambulance", number: 108),
+  List<ContactsModel> contactsGlobalList = [
+    ContactsModel(name: "Police Station", number: 100),
+    ContactsModel(name: "Fire Station", number: 101),
+    ContactsModel(name: "Ambulance", number: 108),
   ];
 
   @override
@@ -37,7 +37,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
   Future<void> getContactList() async {
     setState(() => loading = true);
 
-    List<ContactsModule> data = await contactRepository.getContacts();
+    List<ContactsModel> data = await contactRepository.getContacts();
 
     contactsList = [...contactsGlobalList, ...data];
     contactsList
@@ -47,7 +47,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
     contactsGlobalList = contactsList;
   }
 
-  Future<void> addNewContact({required ContactsModule contact}) async {
+  Future<void> addNewContact({required ContactsModel contact}) async {
     setState(() => loading = true);
 
     Map body = {
@@ -55,7 +55,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
       "phone": contact.number.toString(),
     };
 
-    ContactsModule data = await contactRepository.addContact(body: body);
+    ContactsModel data = await contactRepository.addContact(body: body);
 
     if (data.id.isNotEmpty) {
       contactsList.add(contact);
@@ -68,7 +68,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
     setState(() => loading = false);
   }
 
-  Future<void> updateContact({required ContactsModule contact}) async {
+  Future<void> updateContact({required ContactsModel contact}) async {
     setState(() => loading = true);
 
     Map body = {
@@ -91,7 +91,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
     setState(() => loading = false);
   }
 
-  Future<void> deleteContact({required ContactsModule contact}) async {
+  Future<void> deleteContact({required ContactsModel contact}) async {
     setState(() => loading = true);
 
     bool response = await contactRepository.deleteContact(id: contact.id);
@@ -141,7 +141,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          ContactsModule? newContact = await Get.bottomSheet(
+          ContactsModel? newContact = await Get.bottomSheet(
             const ContactsAddScreen(),
             isScrollControlled: true,
           );
@@ -177,12 +177,12 @@ class _ContactsScreenState extends State<ContactsScreen> {
                       ? ListView.builder(
                           itemCount: contactsList.length,
                           itemBuilder: (BuildContext context, int index) {
-                            ContactsModule contact = contactsList[index];
+                            ContactsModel contact = contactsList[index];
 
                             return InkWell(
                               onTap: contact.id.isNotEmpty
                                   ? () async {
-                                      ContactsModule? newContact =
+                                      ContactsModel? newContact =
                                           await Get.bottomSheet(
                                         ContactsAddScreen(
                                             contactsModule: contact),

@@ -1,16 +1,20 @@
-class ContactsModule {
+class ContactsModel {
   final String id, name;
   final num number;
 
-  ContactsModule({this.id = "", required this.name, required this.number});
+  ContactsModel({
+    this.id = "",
+    required this.name,
+    required this.number,
+  });
 
-  factory ContactsModule.fromMap(Map<String, dynamic> json) => ContactsModule(
+  factory ContactsModel.fromMap(Map<String, dynamic> json) => ContactsModel(
         id: json["_id"],
         name: json["name"],
         number: json["phone"],
       );
 
-  factory ContactsModule.initial() => ContactsModule(
+  factory ContactsModel.initial() => ContactsModel(
         id: "",
         name: "",
         number: 0,
