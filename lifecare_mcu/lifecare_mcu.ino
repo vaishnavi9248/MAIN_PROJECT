@@ -33,7 +33,7 @@ unsigned long lastHumidityTime = millis();
 unsigned long lastPulseTime = millis();
 
 void setup() {
-  Serial.begin(9600);
+  // Serial.begin(9600);
 
   pinMode(BUTTON_PIN, INPUT);
   pinMode(LED_PIN, OUTPUT);
@@ -147,8 +147,8 @@ void pushRequestServer(String path) {
 }
 
 void sendDataServer(String path, String value) {
-  Serial.print(path);
-  Serial.println(value);
+  // Serial.print(path);
+  // Serial.println(value);
   HTTPClient http;
   http.begin(SERVER_URL + path);
   http.addHeader("Content-Type", "application/json");
