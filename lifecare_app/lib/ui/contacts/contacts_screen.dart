@@ -58,7 +58,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
     ContactsModel data = await contactRepository.addContact(body: body);
 
     if (data.id.isNotEmpty) {
-      contactsList.add(contact);
+      contactsList.add(data);
       contactsList
           .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
@@ -244,9 +244,11 @@ class _ContactsScreenState extends State<ContactsScreen> {
                           },
                         )
                       : Center(
-                          child: Text(controller.text.isEmpty
-                              ? "Please add new contact"
-                              : "No contact found"),
+                          child: Text(
+                            controller.text.isEmpty
+                                ? "Please add new contact"
+                                : "No contact found",
+                          ),
                         ),
             ),
           ],

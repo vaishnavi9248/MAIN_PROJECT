@@ -10,6 +10,7 @@ import 'package:lifecare/ui/contacts/contacts_screen.dart';
 import 'package:lifecare/ui/history/history_screen.dart';
 import 'package:lifecare/ui/hospitals/hospital_screen.dart';
 import 'package:lifecare/ui/login/login_screen.dart';
+import 'package:lifecare/ui/reports/report_screen.dart';
 import 'package:lifecare/util/show_custom_snackbar.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -26,7 +27,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("LifeCare"),
         centerTitle: true,
-        systemOverlayStyle: 
+        systemOverlayStyle:
             const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
         elevation: 1.0,
         actions: [
@@ -41,7 +42,12 @@ class HomeScreen extends StatelessWidget {
                     await Future.delayed(const Duration(milliseconds: 1));
                     Get.to(() => HistoryScreen());
                   }),
-              PopupMenuItem(child: const Text("Reports"), onTap: () async {}),
+              PopupMenuItem(
+                  child: const Text("Reports"),
+                  onTap: () async {
+                    await Future.delayed(const Duration(milliseconds: 1));
+                    Get.to(() => const ReportScreen());
+                  }),
               PopupMenuItem(child: const Text("Reminder"), onTap: () {}),
               PopupMenuItem(
                   child: const Text("Hospitals"),
