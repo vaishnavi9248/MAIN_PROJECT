@@ -2,14 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lifecare/data/models/contacts_module.dart';
+import 'package:lifecare/data/repository/contact_repository.dart';
 import 'package:lifecare/ui/contacts/contacts_add_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-List<ContactsModule> contactsGlobalList = [
-  ContactsModule(name: "Police Station", number: 100),
-  ContactsModule(name: "Fire Station", number: 101),
-  ContactsModule(name: "Ambulance", number: 108),
-];
 
 class ContactsScreen extends StatefulWidget {
   const ContactsScreen({Key? key}) : super(key: key);
@@ -23,11 +18,114 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
   TextEditingController controller = TextEditingController();
 
+  ContactRepository contactRepository = ContactRepository();
+
+  bool loading = true;
+
+  List<ContactsModule> contactsGlobalList = [
+    ContactsModule(name: "Police Station", number: 100),
+    ContactsModule(name: "Fire Station", number: 101),
+    ContactsModule(name: "Ambulance", number: 108),
+  ];
+
   @override
   void initState() {
-    contactsList = contactsGlobalList;
-    contactsList.sort((a, b) => a.name.compareTo(b.name));
+    getContactList();
     super.initState();
+  }
+
+  Future<void> getContactList() async {
+    setState(() => loading = true);
+
+    List<ContactsModule> data = await contactRepository.getContacts();
+
+    contactsList = [...contactsGlobalList, ...data];
+    contactsList
+        .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
+    setState(() => loading = false);
+    contactsGlobalList = contactsList;
+  }
+
+  Future<void> addNewContact({required ContactsModule contact}) async {
+    setState(() => loading = true);
+
+    Map body = {
+      "name": contact.name,
+      "phone": contact.number.toString(),
+    };
+
+    ContactsModule data = await contactRepository.addContact(body: body);
+
+    if (data.id.isNotEmpty) {
+      contactsList.add(contact);
+      contactsList
+          .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
+      contactsGlobalList = contactsList;
+    }
+
+    setState(() => loading = false);
+  }
+
+  Future<void> updateContact({required ContactsModule contact}) async {
+    setState(() => loading = true);
+
+    Map body = {
+      "id": contact.id,
+      "name": contact.name,
+      "phone": contact.number.toString(),
+    };
+
+    bool response = await contactRepository.updateContact(body: body);
+
+    if (response) {
+      contactsList.removeWhere((element) => element.id == contact.id);
+      contactsList.add(contact);
+      contactsList
+          .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
+      contactsGlobalList = contactsList;
+    }
+
+    setState(() => loading = false);
+  }
+
+  Future<void> deleteContact({required ContactsModule contact}) async {
+    setState(() => loading = true);
+
+    bool response = await contactRepository.deleteContact(id: contact.id);
+
+    if (response) {
+      contactsList.removeWhere((element) => element.id == contact.id);
+
+      contactsGlobalList = contactsList;
+    }
+
+    setState(() => loading = false);
+  }
+
+  void onSearch({required String text}) {
+    setState(() => loading = true);
+
+    if (text.isEmpty) {
+      contactsList = contactsGlobalList;
+      contactsList
+          .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    } else {
+      contactsList = contactsGlobalList
+          .where((element) =>
+              element.name.toLowerCase().contains(text.toLowerCase()) ||
+              element.number
+                  .toString()
+                  .toLowerCase()
+                  .contains(text.toLowerCase()))
+          .toList();
+      contactsList
+          .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    }
+
+    setState(() => loading = false);
   }
 
   @override
@@ -49,9 +147,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
           );
 
           if (newContact != null) {
-            contactsGlobalList.add(newContact);
-            contactsGlobalList.sort((a, b) => a.name.compareTo(b.name));
-            setState(() {});
+            addNewContact(contact: newContact);
           }
         },
         child: const Icon(Icons.add),
@@ -65,23 +161,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
               child: TextField(
                 controller: controller,
                 onChanged: (String value) {
-                  if (value.isEmpty) {
-                    contactsList = contactsGlobalList;
-                    contactsList.sort((a, b) => a.name.compareTo(b.name));
-                  } else {
-                    contactsList = contactsGlobalList
-                        .where((element) =>
-                            element.name
-                                .toLowerCase()
-                                .contains(value.toLowerCase()) ||
-                            element.number
-                                .toString()
-                                .toLowerCase()
-                                .contains(value.toLowerCase()))
-                        .toList();
-                    contactsList.sort((a, b) => a.name.compareTo(b.name));
-                  }
-                  setState(() {});
+                  onSearch(text: value);
                 },
                 decoration: const InputDecoration(
                   hintText: "Search...",
@@ -91,57 +171,83 @@ class _ContactsScreenState extends State<ContactsScreen> {
               ),
             ),
             Expanded(
-              child: contactsList.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: contactsList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        ContactsModule hospital = contactsList[index];
+              child: loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : contactsList.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: contactsList.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            ContactsModule contact = contactsList[index];
 
-                        return Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 0.3),
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(12.0))),
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 12.0, vertical: 8.0),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12.0, vertical: 10.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                            return InkWell(
+                              onTap: contact.id.isNotEmpty
+                                  ? () async {
+                                      ContactsModule? newContact =
+                                          await Get.bottomSheet(
+                                        ContactsAddScreen(
+                                            contactsModule: contact),
+                                        isScrollControlled: true,
+                                      );
+
+                                      if (newContact != null) {
+                                        if (newContact.id == "delete") {
+                                          deleteContact(contact: contact);
+                                        } else {
+                                          updateContact(contact: newContact);
+                                        }
+                                      }
+                                    }
+                                  : null,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(width: 0.3),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(12.0))),
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 12.0, vertical: 8.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0, vertical: 10.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      "Name: ${hospital.name}",
-                                      style: const TextStyle(letterSpacing: 1),
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Name: ${contact.name}",
+                                            style: const TextStyle(
+                                                letterSpacing: 1),
+                                          ),
+                                          const SizedBox(height: 4.0),
+                                          Text(
+                                            "Phone: ${contact.number}",
+                                            style: const TextStyle(
+                                                letterSpacing: 1),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    const SizedBox(height: 4.0),
-                                    Text(
-                                      "Phone: ${hospital.number}",
-                                      style: const TextStyle(letterSpacing: 1),
-                                    ),
+                                    IconButton(
+                                        onPressed: () {
+                                          launchUrl(Uri.parse(
+                                              "tel:${contact.number}"));
+                                        },
+                                        icon: const Icon(Icons.call)),
                                   ],
                                 ),
                               ),
-                              IconButton(
-                                  onPressed: () {
-                                    launchUrl(
-                                        Uri.parse("tel:${hospital.number}"));
-                                  },
-                                  icon: const Icon(Icons.call)),
-                            ],
-                          ),
-                        );
-                      },
-                    )
-                  : Center(
-                      child: Text(controller.text.isEmpty
-                          ? "Please add new contact"
-                          : "No contact found"),
-                    ),
+                            );
+                          },
+                        )
+                      : Center(
+                          child: Text(controller.text.isEmpty
+                              ? "Please add new contact"
+                              : "No contact found"),
+                        ),
             ),
           ],
         ),

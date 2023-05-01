@@ -49,6 +49,38 @@ const addContact = (req, res) => {
   });
 };
 
+const updateContact = (req, res) => {
+  const { id, name, phone } = req.body;
+
+  let errorMap = {};
+
+  if (!name) errorMap.name = "name is required";
+  if (!phone) errorMap.phone = "phone is required";
+
+  if (errorMap.size > 0) {
+    console.log(req.url, " ", req.method, "", errorMap);
+
+    return res.status(422).json(errorMap);
+  }
+
+  function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(find, "g"), replace);
+  }
+
+  const newPhone = replaceAll(phone, " ", "");
+
+  Contact.updateOne({ _id: id }, { name, newPhone }).then((data) => {
+    const result = {
+      message: "Contact Updated successfully",
+      data: data,
+    };
+
+    console.log(req.url, " ", req.method, "", result);
+
+    res.json(result);
+  });
+};
+
 const deleteContact = (req, res) => {
   const id = req.params.id;
 
@@ -67,5 +99,6 @@ const deleteContact = (req, res) => {
 module.exports = {
   addContact,
   getAllContact,
+  updateContact,
   deleteContact,
 };

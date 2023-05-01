@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:lifecare/data/models/contacts_module.dart';
 
 class ContactsAddScreen extends StatefulWidget {
-  const ContactsAddScreen({Key? key}) : super(key: key);
+  const ContactsAddScreen({Key? key, this.contactsModule}) : super(key: key);
+
+  final ContactsModule? contactsModule;
 
   @override
   State<ContactsAddScreen> createState() => _ContactsAddScreenState();
@@ -14,6 +16,16 @@ class _ContactsAddScreenState extends State<ContactsAddScreen> {
 
   TextEditingController nameController = TextEditingController();
   TextEditingController numberController = TextEditingController();
+
+  @override
+  void initState() {
+    if (widget.contactsModule != null) {
+      nameController.text = widget.contactsModule?.name ?? "";
+      numberController.text = widget.contactsModule?.number.toString() ?? "";
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,21 +94,56 @@ class _ContactsAddScreenState extends State<ContactsAddScreen> {
                 },
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
-                ),
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    ContactsModule contact = ContactsModule(
-                      name: nameController.text,
-                      number: int.parse(numberController.text),
-                    );
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50),
+                      ),
+                      onPressed: () {
+                        if (formKey.currentState!.validate()) {
+                          if (widget.contactsModule?.name !=
+                                  nameController.text ||
+                              widget.contactsModule?.number.toString() !=
+                                  numberController.text) {
+                            ContactsModule contact = ContactsModule(
+                              id: widget.contactsModule?.id ?? "",
+                              name: nameController.text,
+                              number: int.parse(numberController.text),
+                            );
 
-                    Get.back(result: contact);
-                  }
-                },
-                child: const Text("Save"),
+                            Get.back(result: contact);
+                          } else {
+                            Get.back();
+                          }
+                        }
+                      },
+                      child: Text(
+                          widget.contactsModule != null ? "Update" : "Save"),
+                    ),
+                  ),
+                  if (widget.contactsModule != null) ...[
+                    const SizedBox(width: 16.0),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(50),
+                            backgroundColor: Colors.red),
+                        onPressed: () {
+                          ContactsModule contact = ContactsModule(
+                            id: "delete",
+                            name: "",
+                            number: 0,
+                          );
+
+                          Get.back(result: contact);
+                        },
+                        child: const Text("Delete"),
+                      ),
+                    ),
+                  ],
+                ],
               )
             ],
           ),

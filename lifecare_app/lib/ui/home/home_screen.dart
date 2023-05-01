@@ -26,7 +26,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("LifeCare"),
         centerTitle: true,
-        systemOverlayStyle:
+        systemOverlayStyle: 
             const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
         elevation: 1.0,
         actions: [

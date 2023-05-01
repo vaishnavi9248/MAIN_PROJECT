@@ -56,7 +56,7 @@ class NotificationService {
   void firebaseOnMessageListen() {
     FirebaseMessaging.onMessage.listen((RemoteMessage? message) {
       print("firebaseOnMessageListen ${message?.toMap().toString()}");
-      // notificationShow(message);
+      notificationShow(message);
     });
   }
 
