@@ -16,17 +16,7 @@ const getAllNotes = (req, res) => {
 };
 
 const addNote = (req, res) => {
-  const { title, description } = req.body;
-
-  if (!title || !description) {
-    let errorMap = {};
-    if (!title) errorMap.title = "title is required";
-    if (!description) errorMap.description = "description is required";
-
-    console.log(req.url, " ", req.method, "", errorMap);
-
-    return res.status(422).json(errorMap);
-  }
+  const { title = "", description = "" } = req.body;
 
   const note = new Notes({
     title,
@@ -84,6 +74,22 @@ const deleteNote = (req, res) => {
 
     res.json(result);
   });
+};
+
+const getAllDocs = (req, res) => {
+  const id = req.params.id;
+
+  Doc.find()
+    .select("-__v")
+    .then((data) => {
+      const result = {
+        count: data.length,
+        data: data,
+      };
+
+      console.log(req.url, " ", req.method, " ", result);
+      return res.json(result);
+    });
 };
 
 const getAllDocsById = (req, res) => {
@@ -154,6 +160,7 @@ module.exports = {
   addNote,
   updateNote,
   deleteNote,
+  getAllDocs,
   getAllDocsById,
   addDoc,
   deleteDoc,

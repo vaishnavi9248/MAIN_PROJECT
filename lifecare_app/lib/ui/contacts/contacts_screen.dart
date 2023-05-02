@@ -22,7 +22,9 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
   bool loading = true;
 
-  List<ContactsModel> contactsGlobalList = [
+  List<ContactsModel> contactsGlobalList = [];
+
+  final List<ContactsModel> staticData = [
     ContactsModel(name: "Police Station", number: 100),
     ContactsModel(name: "Fire Station", number: 101),
     ContactsModel(name: "Ambulance", number: 108),
@@ -39,12 +41,13 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
     List<ContactsModel> data = await contactRepository.getContacts();
 
-    contactsList = [...contactsGlobalList, ...data];
+    contactsList = [...staticData, ...data];
     contactsList
         .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
-    setState(() => loading = false);
     contactsGlobalList = contactsList;
+
+    setState(() => loading = false);
   }
 
   Future<void> addNewContact({required ContactsModel contact}) async {
@@ -153,105 +156,108 @@ class _ContactsScreenState extends State<ContactsScreen> {
         child: const Icon(Icons.add),
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                controller: controller,
-                onChanged: (String value) {
-                  onSearch(text: value);
-                },
-                decoration: const InputDecoration(
-                  hintText: "Search...",
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(),
+        child: RefreshIndicator(
+          onRefresh: loading ? () async => false : () async => getContactList(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: controller,
+                  onChanged: (String value) {
+                    onSearch(text: value);
+                  },
+                  decoration: const InputDecoration(
+                    hintText: "Search...",
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(),
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-              child: loading
-                  ? const Center(child: CircularProgressIndicator())
-                  : contactsList.isNotEmpty
-                      ? ListView.builder(
-                          itemCount: contactsList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            ContactsModel contact = contactsList[index];
+              Expanded(
+                child: loading
+                    ? const Center(child: CircularProgressIndicator())
+                    : contactsList.isNotEmpty
+                        ? ListView.builder(
+                            itemCount: contactsList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              ContactsModel contact = contactsList[index];
 
-                            return InkWell(
-                              onTap: contact.id.isNotEmpty
-                                  ? () async {
-                                      ContactsModel? newContact =
-                                          await Get.bottomSheet(
-                                        ContactsAddScreen(
-                                            contactsModule: contact),
-                                        isScrollControlled: true,
-                                      );
+                              return InkWell(
+                                onTap: contact.id.isNotEmpty
+                                    ? () async {
+                                        ContactsModel? newContact =
+                                            await Get.bottomSheet(
+                                          ContactsAddScreen(
+                                              contactsModule: contact),
+                                          isScrollControlled: true,
+                                        );
 
-                                      if (newContact != null) {
-                                        if (newContact.id == "delete") {
-                                          deleteContact(contact: contact);
-                                        } else {
-                                          updateContact(contact: newContact);
+                                        if (newContact != null) {
+                                          if (newContact.id == "delete") {
+                                            deleteContact(contact: contact);
+                                          } else {
+                                            updateContact(contact: newContact);
+                                          }
                                         }
                                       }
-                                    }
-                                  : null,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(width: 0.3),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(12.0))),
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 12.0, vertical: 8.0),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0, vertical: 10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Name: ${contact.name}",
-                                            style: const TextStyle(
-                                                letterSpacing: 1),
-                                          ),
-                                          const SizedBox(height: 4.0),
-                                          Text(
-                                            "Phone: ${contact.number}",
-                                            style: const TextStyle(
-                                                letterSpacing: 1),
-                                          ),
-                                        ],
+                                    : null,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border.all(width: 0.3),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(12.0))),
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 8.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 10.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Name: ${contact.name}",
+                                              style: const TextStyle(
+                                                  letterSpacing: 1),
+                                            ),
+                                            const SizedBox(height: 4.0),
+                                            Text(
+                                              "Phone: ${contact.number}",
+                                              style: const TextStyle(
+                                                  letterSpacing: 1),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    IconButton(
-                                        onPressed: () {
-                                          launchUrl(Uri.parse(
-                                              "tel:${contact.number}"));
-                                        },
-                                        icon: const Icon(Icons.call)),
-                                  ],
+                                      IconButton(
+                                          onPressed: () {
+                                            launchUrl(Uri.parse(
+                                                "tel:${contact.number}"));
+                                          },
+                                          icon: const Icon(Icons.call)),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        )
-                      : Center(
-                          child: Text(
-                            controller.text.isEmpty
-                                ? "Please add new contact"
-                                : "No contact found",
+                              );
+                            },
+                          )
+                        : Center(
+                            child: Text(
+                              controller.text.isEmpty
+                                  ? "Please add new contact"
+                                  : "No contact found",
+                            ),
                           ),
-                        ),
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -10,6 +10,8 @@ router.put("/notes", controller.updateNote);
 
 router.delete("/notes/:id", controller.deleteNote);
 
+router.get("/doc", controller.getAllDocs);
+
 router.get("/doc/:id", controller.getAllDocsById);
 
 router.post("/doc", controller.addDoc);

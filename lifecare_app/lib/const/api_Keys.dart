@@ -5,4 +5,5 @@ class Api {
   static const String contact = "${ConfigKey.serverKey}/contact";
   static const String hospital = "${ConfigKey.serverKey}/hospital";
   static const String report = "${ConfigKey.serverKey}/notes";
+  static const String doc = "${ConfigKey.serverKey}/doc";
 }
