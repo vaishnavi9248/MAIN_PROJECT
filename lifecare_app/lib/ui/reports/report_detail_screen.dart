@@ -81,6 +81,17 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
 
       if (noteId.isNotEmpty) {
         addDoc(noteId: noteId, fileName: fileName, url: url);
+      } else {
+        Map body = {
+          "title": "",
+          "description": "",
+        };
+
+        ReportModel data = await reportRepository.addReport(body: body);
+
+        setState(() => reportModel = data);
+
+        addDoc(noteId: data.id, fileName: fileName, url: url);
       }
     }
   }
@@ -111,153 +122,169 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Report Detail"),
-        centerTitle: false,
-        systemOverlayStyle:
-            const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-        elevation: 0,
-        backgroundColor: Colors.teal,
-        actions: [
-          TextButton(
-            onPressed: () {
-              Get.back(
-                  result: ReportModel(
-                id: "delete",
-                title: "",
-                description: "",
-              ));
-            },
-            child: const Text(
-              "Delete",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 17,
-              ),
-            ),
-          ),
-          const VerticalDivider(
-            color: Colors.white,
-            width: 2.0,
-            thickness: 1.0,
-            endIndent: 8,
-            indent: 8,
-          ),
-          TextButton(
-            onPressed: () {
-              Get.back(
-                  result: ReportModel(
-                id: reportModel?.id ?? "",
-                title: titleCon.text,
-                description: desCon.text,
-              ));
-            },
-            child: Text(
-              reportModel != null ? "Update" : "Save",
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 17,
-              ),
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => fileUploadAction(noteId: reportModel?.id ?? ""),
-        child: const Icon(Icons.attach_file),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextFormField(
-                  controller: titleCon,
-                  keyboardType: TextInputType.text,
-                  maxLines: 1,
-                  decoration: const InputDecoration(
-                    hintText: "Title",
-                    labelText: "Title",
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
+    return WillPopScope(
+      onWillPop: () async {
+        if (widget.reportModel == null && (reportModel?.id ?? "").isNotEmpty) {
+          Get.back(
+              result: ReportModel(
+            id: "refresh",
+            title: "",
+            description: "",
+          ));
+        }
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Report Detail"),
+          centerTitle: false,
+          systemOverlayStyle:
+              const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+          elevation: 0,
+          backgroundColor: Colors.teal,
+          actions: [
+            if ((reportModel?.id ?? "").isNotEmpty)
+              TextButton(
+                onPressed: () {
+                  Get.back(
+                      result: ReportModel(
+                    id: "delete",
+                    title: "",
+                    description: "",
+                  ));
+                },
+                child: const Text(
+                  "Delete",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
                   ),
                 ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  controller: desCon,
-                  keyboardType: TextInputType.multiline,
-                  textInputAction: TextInputAction.newline,
-                  maxLines: 12,
-                  decoration: const InputDecoration(
-                    hintText: "Description",
-                    labelText: "Description",
-                    alignLabelWithHint: true,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
-                  ),
+              ),
+            const VerticalDivider(
+              color: Colors.white,
+              width: 2.0,
+              thickness: 1.0,
+              endIndent: 8,
+              indent: 8,
+            ),
+            TextButton(
+              onPressed: () {
+                Get.back(
+                    result: ReportModel(
+                  id: reportModel?.id ?? "",
+                  title: titleCon.text,
+                  description: desCon.text,
+                ));
+              },
+              child: Text(
+                reportModel != null ? "Update" : "Save",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
                 ),
-                const SizedBox(height: 16.0),
-                if (loading)
-                  const SizedBox(
-                    height: 250,
-                    child: Center(child: CircularProgressIndicator()),
-                  )
-                else
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Documents: ${docList.length}",
-                        style: const TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => fileUploadAction(noteId: reportModel?.id ?? ""),
+          child: const Icon(Icons.attach_file),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    controller: titleCon,
+                    keyboardType: TextInputType.text,
+                    maxLines: 1,
+                    decoration: const InputDecoration(
+                      hintText: "Title",
+                      labelText: "Title",
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
                       ),
-                      const SizedBox(height: 8.0),
-                      ListView.builder(
-                        itemCount: docList.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (BuildContext context, int index) {
-                          DocModel report = docList[index];
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextFormField(
+                    controller: desCon,
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.newline,
+                    maxLines: 12,
+                    decoration: const InputDecoration(
+                      hintText: "Description",
+                      labelText: "Description",
+                      alignLabelWithHint: true,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  if (loading)
+                    const SizedBox(
+                      height: 250,
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  else
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Documents: ${docList.length}",
+                          style: const TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8.0),
+                        ListView.builder(
+                          itemCount: docList.length,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (BuildContext context, int index) {
+                            DocModel report = docList[index];
 
-                          return Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      "${index + 1}. ${report.name}",
-                                      maxLines: 1,
-                                      style: const TextStyle(
-                                          letterSpacing: 1,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold),
+                            return Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        "${index + 1}. ${report.name}",
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                            letterSpacing: 1,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 12.0),
-                                  IconButton(
-                                      onPressed: () => deleteDoc(id: report.id),
-                                      icon: const Icon(Icons.delete)),
-                                  IconButton(
-                                      onPressed: () => launchUrl(
-                                          Uri.parse(report.url),
-                                          mode: LaunchMode.externalApplication),
-                                      icon: const Icon(Icons.remove_red_eye)),
-                                ],
+                                    const SizedBox(width: 12.0),
+                                    IconButton(
+                                        onPressed: () =>
+                                            deleteDoc(id: report.id),
+                                        icon: const Icon(Icons.delete)),
+                                    IconButton(
+                                        onPressed: () => launchUrl(
+                                            Uri.parse(report.url),
+                                            mode:
+                                                LaunchMode.externalApplication),
+                                        icon: const Icon(Icons.remove_red_eye)),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 50.0),
-                    ],
-                  ),
-              ],
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 50.0),
+                      ],
+                    ),
+                ],
+              ),
             ),
           ),
         ),

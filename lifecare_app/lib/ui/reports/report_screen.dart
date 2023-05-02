@@ -123,6 +123,8 @@ class _ReportScreenState extends State<ReportScreen> {
           if (reportModel != null) {
             if (reportModel.id.isEmpty) {
               addNewReport(report: reportModel);
+            } else if (reportModel.id == "refresh") {
+              getReportList();
             } else {
               updateReport(report: reportModel);
             }
@@ -177,6 +179,9 @@ class _ReportScreenState extends State<ReportScreen> {
                                           } else {
                                             if (reportModel.id == "delete") {
                                               deleteReport(report: report);
+                                            } else if (reportModel.id ==
+                                                "refresh") {
+                                              getReportList();
                                             } else {
                                               updateReport(report: reportModel);
                                             }

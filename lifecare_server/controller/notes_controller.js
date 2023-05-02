@@ -36,13 +36,11 @@ const addNote = (req, res) => {
 };
 
 const updateNote = (req, res) => {
-  const { id, title, description } = req.body;
+  const { id, title = "", description = "" } = req.body;
 
-  if (!id || !title || !description) {
+  if (!id) {
     let errorMap = {};
     if (!id) errorMap.id = "id is required";
-    if (!title) errorMap.title = "title is required";
-    if (!description) errorMap.description = "description is required";
 
     console.log(req.url, " ", req.method, "", errorMap);
 
