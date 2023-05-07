@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:lifecare/util/custom_print.dart';
 
 class HttpHelper {
   Future<dynamic> get(String url, {bool auth = true}) async {
@@ -11,7 +12,7 @@ class HttpHelper {
 
       return _returnResponse(response);
     } catch (e) {
-      print("http catch get $e");
+      customDebugPrint("http catch get $e");
     }
 
     return null;
@@ -26,7 +27,7 @@ class HttpHelper {
 
       return _returnResponse(response);
     } catch (e) {
-      print("http catch post $e");
+      customDebugPrint("http catch post $e");
     }
     return null;
   }
@@ -34,18 +35,13 @@ class HttpHelper {
   Future<dynamic> put(String url, dynamic body, {bool auth = true}) async {
     Map<String, String>? header = await _httpHeader(auth);
 
-    print("requesting for put $url \nheader $header \nbody $body");
-
     try {
       var response =
           await http.put(Uri.parse(url), body: body, headers: header);
 
-      print(
-          "put url: $url \nheader: $header \nbody: $body \nstatusCode: ${response.statusCode} \nresponse ${response.body} ");
-
       return _returnResponse(response);
     } catch (e) {
-      print("http catch put $e");
+      customDebugPrint("http catch put $e");
     }
 
     return null;
@@ -54,17 +50,12 @@ class HttpHelper {
   Future<dynamic> delete(String url, {bool auth = true}) async {
     Map<String, String>? header = await _httpHeader(auth);
 
-    print("requesting for delete $url header $header");
-
     try {
       var response = await http.delete(Uri.parse(url), headers: header);
 
-      print(
-          "delete url: $url \nheader: $header  \nstatusCode: ${response.statusCode} \nresponse ${response.body} ");
-
       return _returnResponse(response);
     } catch (e) {
-      print("http catch delete $e");
+      customDebugPrint("http catch delete $e");
     }
 
     return null;
@@ -76,8 +67,6 @@ class HttpHelper {
       required String fieldName,
       bool auth = true}) async {
     Map<String, String>? hd = await _httpHeader(auth);
-
-    print("requesting for multipart $url \nheader $hd");
 
     late dynamic responseJson;
     try {
@@ -91,12 +80,9 @@ class HttpHelper {
       var res = await request.send();
       var response = await http.Response.fromStream(res);
 
-      print(
-          "multiple url: $url \nheader: ${hd.toString()} \nstatusCode: ${response.statusCode} \nresponse ${response.body} ");
-
       responseJson = _returnResponse(response);
     } catch (e) {
-      print("multipart error $e");
+      customDebugPrint("multipart error $e");
     }
 
     return responseJson;
@@ -120,7 +106,7 @@ class HttpHelper {
           return null;
       }
     } catch (e) {
-      print("Server Error");
+      customDebugPrint("Server Error");
     }
   }
 }

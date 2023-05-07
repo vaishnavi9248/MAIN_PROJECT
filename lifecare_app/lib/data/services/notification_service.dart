@@ -1,16 +1,25 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:lifecare/data/models/reminder_model.dart';
+import 'package:lifecare/util/custom_print.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  AndroidNotificationChannel channel = const AndroidNotificationChannel(
+    'high_importance_channel',
+    'High Importance Notifications',
+    importance: Importance.max,
+  );
+
   Future<void> init() async {
     await registerNotificationListeners();
-
-    firebaseOpenMessageListen();
-    firebaseOnMessageListen();
+    await initializeFlutterLocalNotificationsPlugin();
+    await requestNotificationPermissions();
   }
-
-  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-  late AndroidNotificationChannel channel;
 
   Future<void> registerNotificationListeners() async {
     await FirebaseMessaging.instance
@@ -20,27 +29,26 @@ class NotificationService {
       sound: true,
     );
 
-    channel = const AndroidNotificationChannel(
-      'high_importance_channel',
-      'High Importance Notifications',
-      importance: Importance.max,
-    );
-
-    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
+  }
 
-    var androidSettings =
-        const AndroidInitializationSettings('@mipmap/ic_launcher');
+  Future<void> initializeFlutterLocalNotificationsPlugin() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    var initSettings = InitializationSettings(android: androidSettings);
+    const InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
 
-    flutterLocalNotificationsPlugin.initialize(initSettings);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-    flutterLocalNotificationsPlugin
+    tz.initializeTimeZones();
+  }
+
+  Future<void> requestNotificationPermissions() async {
+    await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.requestPermission();
@@ -48,14 +56,14 @@ class NotificationService {
 
   void firebaseOpenMessageListen() {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("onMessageOpenedApp ${message.toMap().toString()}");
+      customDebugPrint("onMessageOpenedApp ${message.toMap().toString()}");
     });
   }
 
-  //Foreground
   void firebaseOnMessageListen() {
     FirebaseMessaging.onMessage.listen((RemoteMessage? message) {
-      print("firebaseOnMessageListen ${message?.toMap().toString()}");
+      customDebugPrint(
+          "firebaseOnMessageListen ${message?.toMap().toString()}");
       notificationShow(message);
     });
   }
@@ -63,7 +71,7 @@ class NotificationService {
   void notificationShow(RemoteMessage? message) async {
     try {
       RemoteNotification? notification = message?.notification;
-      flutterLocalNotificationsPlugin.show(
+      await flutterLocalNotificationsPlugin.show(
         notification.hashCode,
         notification?.title,
         notification?.body,
@@ -76,7 +84,40 @@ class NotificationService {
         ),
       );
     } catch (e) {
-      print("notificationShow error $e");
+      customDebugPrint("notificationShow error $e");
+    }
+  }
+
+  Future<List<PendingNotificationRequest>> getScheduledNotifications() async {
+    return await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+  }
+
+  void showTimeNotification(ReminderModel reminderModel) async {
+    try {
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+        reminderModel.id.hashCode,
+        reminderModel.title,
+        reminderModel.message,
+        tz.TZDateTime.from(reminderModel.dateTime, tz.local),
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            channel.id,
+            channel.name,
+            playSound: true,
+            importance: Importance.high,
+            priority: Priority.high,
+            sound: const UriAndroidNotificationSound("alarm"),
+            audioAttributesUsage: AudioAttributesUsage.alarm,
+            enableVibration: true,
+            additionalFlags: Int32List.fromList(<int>[3]),
+          ),
+        ),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+      );
+    } catch (e) {
+      customDebugPrint("showTimeNotification error $e");
     }
   }
 }

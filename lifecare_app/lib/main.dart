@@ -10,10 +10,12 @@ import 'package:lifecare/ui/login/login_screen.dart';
 
 import 'firebase_options.dart';
 
+NotificationService notificationGlobalService = NotificationService();
+
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("_firebaseMessagingBackgroundHandler ${message.toMap()}");
-  NotificationService().notificationShow(message);
+  notificationGlobalService.notificationShow(message);
 }
 
 Future<void> main() async {
@@ -22,7 +24,7 @@ Future<void> main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  NotificationService().init();
+  notificationGlobalService.init();
 
   bool isLoggedIn = await SharedPref().getBool(key: PreferenceKey.isLoggedIn);
 

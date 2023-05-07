@@ -10,6 +10,7 @@ import 'package:lifecare/ui/contacts/contacts_screen.dart';
 import 'package:lifecare/ui/history/history_screen.dart';
 import 'package:lifecare/ui/hospitals/hospital_screen.dart';
 import 'package:lifecare/ui/login/login_screen.dart';
+import 'package:lifecare/ui/reminder/reminder_screen.dart';
 import 'package:lifecare/ui/reports/report_screen.dart';
 import 'package:lifecare/util/show_custom_snackbar.dart';
 
@@ -48,7 +49,12 @@ class HomeScreen extends StatelessWidget {
                     await Future.delayed(const Duration(milliseconds: 1));
                     Get.to(() => const ReportScreen());
                   }),
-              PopupMenuItem(child: const Text("Reminder"), onTap: () {}),
+              PopupMenuItem(
+                  child: const Text("Reminder"),
+                  onTap: () async {
+                    await Future.delayed(const Duration(milliseconds: 1));
+                    Get.to(() => const ReminderScreen());
+                  }),
               PopupMenuItem(
                   child: const Text("Hospitals"),
                   onTap: () async {
