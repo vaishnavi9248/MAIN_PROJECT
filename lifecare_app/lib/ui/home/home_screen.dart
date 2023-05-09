@@ -5,9 +5,11 @@ import 'package:get/get.dart';
 import 'package:lifecare/const/preference_key.dart';
 import 'package:lifecare/controller/sensor_values_controller.dart';
 import 'package:lifecare/controller/socket_controller.dart';
+import 'package:lifecare/data/services/notification_service.dart';
 import 'package:lifecare/data/services/shared_pref.dart';
 import 'package:lifecare/ui/contacts/contacts_screen.dart';
-import 'package:lifecare/ui/history/history_screen.dart';
+import 'package:lifecare/ui/history/heartbeat_history_screen.dart';
+import 'package:lifecare/ui/history/temperature_history_screen.dart';
 import 'package:lifecare/ui/hospitals/hospital_screen.dart';
 import 'package:lifecare/ui/login/login_screen.dart';
 import 'package:lifecare/ui/reminder/reminder_screen.dart';
@@ -15,12 +17,14 @@ import 'package:lifecare/ui/reports/report_screen.dart';
 import 'package:lifecare/util/show_custom_snackbar.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({Key? key, required this.notificationService}) : super(key: key);
 
   final SensorValuesController sensorValueController =
       Get.put(SensorValuesController());
 
   final SocketController socketController = Get.put(SocketController());
+
+  final NotificationService notificationService;
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +42,16 @@ class HomeScreen extends StatelessWidget {
             itemBuilder: (BuildContext context) => [
               PopupMenuItem(child: const Text("Alert"), onTap: () {}),
               PopupMenuItem(
-                  child: const Text("History"),
+                  child: const Text("HeartBeat History"),
                   onTap: () async {
                     await Future.delayed(const Duration(milliseconds: 1));
-                    Get.to(() => HistoryScreen());
+                    Get.to(() => const HeartBeatHistoryScreen());
+                  }),
+              PopupMenuItem(
+                  child: const Text("Temperature History"),
+                  onTap: () async {
+                    await Future.delayed(const Duration(milliseconds: 1));
+                    Get.to(() => const TemperatureHistoryScreen());
                   }),
               PopupMenuItem(
                   child: const Text("Reports"),
@@ -53,7 +63,8 @@ class HomeScreen extends StatelessWidget {
                   child: const Text("Reminder"),
                   onTap: () async {
                     await Future.delayed(const Duration(milliseconds: 1));
-                    Get.to(() => const ReminderScreen());
+                    Get.to(() => ReminderScreen(
+                        notificationService: notificationService));
                   }),
               PopupMenuItem(
                   child: const Text("Hospitals"),
@@ -75,7 +86,8 @@ class HomeScreen extends StatelessWidget {
                     showCustomSnackBar(message: "Successfully logged-out");
                     await Future.delayed(const Duration(milliseconds: 1));
 
-                    Get.offAll(() => const LoginScreen());
+                    Get.offAll(() =>
+                        LoginScreen(notificationService: notificationService));
                     Get.deleteAll();
                   }),
             ],
@@ -97,7 +109,8 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 4.0),
                 Obx(
                   () => Text(
-                    "  ${sensorValueController.sensorsValues.map((element) => element.heartBeat).last.round()} BPM",
+                    "C: ${sensorValueController.heartBeatMinValues.map((element) => element.value).last} / "
+                    "Avg: ${sensorValueController.heartBeatAverage} BPM",
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 18.0),
                   ),
@@ -106,9 +119,16 @@ class HomeScreen extends StatelessWidget {
                 Expanded(
                   child: Obx(
                     () => Sparkline(
-                      data: sensorValueController.sensorsValues
-                          .map((element) => element.heartBeat)
-                          .toList(),
+                      data: sensorValueController.heartBeatMinValues
+                          .map((element) {
+                        if (element.value > 100.0) {
+                          return 100.0;
+                        } else if (element.value < 60.0) {
+                          return 60.0;
+                        } else {
+                          return element.value;
+                        }
+                      }).toList(),
                       enableGridLines: true,
                       // fillMode: FillMode.below,
                       // fillColor: Colors.red.withOpacity(0.5),
@@ -126,7 +146,8 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(height: 4.0),
                 Obx(
                   () => Text(
-                    "${sensorValueController.sensorsValues.map((element) => element.temperature).last} °f",
+                    "C: ${sensorValueController.temperatureMinValues.map((element) => element.value).last} / "
+                    "Avg: ${sensorValueController.temperatureAverage} °f",
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 18.0),
                   ),
@@ -135,9 +156,16 @@ class HomeScreen extends StatelessWidget {
                 Expanded(
                   child: Obx(
                     () => Sparkline(
-                      data: sensorValueController.sensorsValues
-                          .map((element) => element.temperature)
-                          .toList(),
+                      data: sensorValueController.temperatureMinValues
+                          .map((element) {
+                        if (element.value > 99.0) {
+                          return 99.0;
+                        } else if (element.value < 97.0) {
+                          return 97.0;
+                        } else {
+                          return element.value;
+                        }
+                      }).toList(),
                       enableGridLines: true,
                       //fillMode: FillMode.below,
                       //fillColor: Colors.red.withOpacity(0.5),

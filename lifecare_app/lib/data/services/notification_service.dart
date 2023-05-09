@@ -19,6 +19,9 @@ class NotificationService {
     await registerNotificationListeners();
     await initializeFlutterLocalNotificationsPlugin();
     await requestNotificationPermissions();
+
+    firebaseOpenMessageListen();
+    firebaseOnMessageListen();
   }
 
   Future<void> registerNotificationListeners() async {
@@ -80,6 +83,11 @@ class NotificationService {
             channel.id,
             channel.name,
             playSound: true,
+            importance: Importance.high,
+            priority: Priority.high,
+            audioAttributesUsage: AudioAttributesUsage.alarm,
+            enableVibration: true,
+            additionalFlags: Int32List.fromList(<int>[4]),
           ),
         ),
       );

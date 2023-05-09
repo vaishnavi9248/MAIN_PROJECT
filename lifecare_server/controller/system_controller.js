@@ -65,13 +65,13 @@ const addTemperature = (req, res) => {
       .then((result) => {
         if (result && result.length > 0) {
           const io = req.io;
-          const average = parseFloat(result[0].averageValue.toFixed(2));
+          const averageValue = parseFloat(result[0].averageValue.toFixed(2));
 
-          if (average > 99) {
+          if (averageValue > 99 && NewData.value > 99) {
             const data = {
               message: "High heat count",
               data: NewData,
-              average,
+              averageValue,
             };
 
             console.log(req.url, " ", req.method, " ", data);
@@ -88,11 +88,11 @@ const addTemperature = (req, res) => {
             sendFCMToDevices(message, req, res);
 
             return res.json(data);
-          } else if (average < 97) {
+          } else if (averageValue < 97 && NewData.value > 97) {
             const data = {
               message: "Low heat count",
               data: NewData,
-              average,
+              averageValue,
             };
 
             console.log(req.url, " ", req.method, " ", data);
@@ -113,7 +113,7 @@ const addTemperature = (req, res) => {
             const data = {
               message: "New temperature saved successfully!",
               data: NewData,
-              averageValue: average,
+              averageValue: averageValue,
             };
 
             console.log(req.url, " ", req.method, " ", data);
@@ -192,13 +192,13 @@ const addHeartbeat = (req, res) => {
       .then((result) => {
         if (result && result.length > 0) {
           const io = req.io;
-          const average = parseFloat(result[0].averageValue.toFixed(2));
+          const averageValue = parseFloat(result[0].averageValue.toFixed(2));
 
-          if (average > 100) {
+          if (averageValue > 100 && NewData.value > 100) {
             const data = {
               message: "High heartbeat count",
               data: NewData,
-              average,
+              averageValue,
             };
 
             console.log(req.url, " ", req.method, " ", data);
@@ -215,11 +215,11 @@ const addHeartbeat = (req, res) => {
             sendFCMToDevices(message, req, res);
 
             return res.json(data);
-          } else if (average < 60) {
+          } else if (averageValue < 60 && NewData.value > 60) {
             const data = {
               message: "Low heartbeat count",
               data: NewData,
-              average,
+              averageValue,
             };
 
             console.log(req.url, " ", req.method, " ", data);
@@ -240,7 +240,7 @@ const addHeartbeat = (req, res) => {
             const data = {
               message: "New heartbeat saved successfully!",
               data: NewData,
-              average,
+              averageValue,
             };
 
             console.log(req.url, " ", req.method, " ", data);
@@ -257,11 +257,12 @@ const addHeartbeat = (req, res) => {
       });
   });
 };
+
 const pushButtonClicked = (req, res) => {
   const message = {
     notification: {
-      title: "Hello, World!",
-      body: "This is a notification from my server!",
+      title: "Please come",
+      body: "Patient is calling you",
     },
   };
 

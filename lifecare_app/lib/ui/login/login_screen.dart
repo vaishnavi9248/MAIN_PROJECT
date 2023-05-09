@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lifecare/const/preference_key.dart';
+import 'package:lifecare/data/services/notification_service.dart';
 import 'package:lifecare/data/services/shared_pref.dart';
 import 'package:lifecare/ui/home/home_screen.dart';
 import 'package:lifecare/util/show_custom_snackbar.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({Key? key, required this.notificationService})
+      : super(key: key);
+
+  final NotificationService notificationService;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -158,7 +162,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
         showCustomSnackBar(message: "Successfully logged-in");
 
-        Get.offAll(() => HomeScreen());
+        Get.offAll(
+            () => HomeScreen(notificationService: widget.notificationService));
       } else {
         setState(() => _loginButtonText = "Login");
 

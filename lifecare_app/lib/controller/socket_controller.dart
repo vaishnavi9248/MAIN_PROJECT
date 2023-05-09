@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:lifecare/const/config_key.dart';
 import 'package:lifecare/controller/common_controller.dart';
 import 'package:lifecare/controller/sensor_values_controller.dart';
+import 'package:lifecare/data/models/socket_sensors_model.dart';
+import 'package:lifecare/util/custom_print.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 class SocketController extends GetxController {
@@ -28,31 +30,30 @@ class SocketController extends GetxController {
             .build());
 
     socket.onConnect((data) {
-      print("Connected to socket $data");
+      customDebugPrint("Connected to socket $data");
     });
 
     socket.onAny((event, data) {
-      // print("event $event data $data");
+      if (event != "newHeartBeat" && event != "newTemperature") {
+        customDebugPrint("event $event data $data");
+      }
     });
 
     socket.on("newHeartBeat", (data) {
-      sensorValueController.updateSensorValues(
-        heartBeat: double.parse(data["data"]["value"].toString()),
-        temperature: 0.0,
-      );
+      sensorValueController.updateHeartBeatValues(
+          data: SocketSensorsModel.fromJson(data));
     });
 
     socket.on("newTemperature", (data) {
-      sensorValueController.updateSensorValues(
-        heartBeat: 0.0,
-        temperature: double.parse(data["data"]["value"].toString()),
-      );
+      sensorValueController.updateTemperatureValues(
+          data: SocketSensorsModel.fromJson(data));
     });
 
     //receive new messages
     // socket.on("message", message);
 
-    socket.onConnecting((data) => print("Connecting to socket $data"));
+    socket
+        .onConnecting((data) => customDebugPrint("Connecting to socket $data"));
 
     socket.onError(_connectionError);
     socket.onConnectError(_connectionError);
@@ -60,7 +61,7 @@ class SocketController extends GetxController {
   }
 
   void _connectionError(dynamic data) {
-    print("socket connection error $data");
+    customDebugPrint("socket connection error $data");
     //connectToSocket();
   }
 

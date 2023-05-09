@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lifecare/data/models/reminder_model.dart';
-import 'package:lifecare/main.dart';
+import 'package:lifecare/data/services/notification_service.dart';
 import 'package:lifecare/util/custom_print.dart';
 
 class ReminderScreen extends StatefulWidget {
-  const ReminderScreen({Key? key}) : super(key: key);
+  const ReminderScreen({Key? key, required this.notificationService})
+      : super(key: key);
+
+  final NotificationService notificationService;
 
   @override
   State<ReminderScreen> createState() => _ReminderScreenState();
@@ -46,7 +49,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
 
     for (var element in reminders) {
       customDebugPrint("element ${element.dateTime}");
-      notificationGlobalService.showTimeNotification(element);
+      widget.notificationService.showTimeNotification(element);
     }
 
     setState(() => loading = false);

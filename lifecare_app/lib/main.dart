@@ -7,15 +7,14 @@ import 'package:lifecare/data/services/notification_service.dart';
 import 'package:lifecare/data/services/shared_pref.dart';
 import 'package:lifecare/ui/home/home_screen.dart';
 import 'package:lifecare/ui/login/login_screen.dart';
+import 'package:lifecare/util/custom_print.dart';
 
 import 'firebase_options.dart';
 
-NotificationService notificationGlobalService = NotificationService();
-
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("_firebaseMessagingBackgroundHandler ${message.toMap()}");
-  notificationGlobalService.notificationShow(message);
+  customDebugPrint("_firebaseMessagingBackgroundHandler ${message.toMap()}");
+  //notificationGlobalService.notificationShow(message);
 }
 
 Future<void> main() async {
@@ -24,17 +23,27 @@ Future<void> main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
+  NotificationService notificationGlobalService = NotificationService();
+
   notificationGlobalService.init();
 
   bool isLoggedIn = await SharedPref().getBool(key: PreferenceKey.isLoggedIn);
 
-  runApp(MyApp(isLoggedIn: isLoggedIn));
+  runApp(MyApp(
+    isLoggedIn: isLoggedIn,
+    notificationGlobalService: notificationGlobalService,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.isLoggedIn});
+  const MyApp({
+    super.key,
+    required this.isLoggedIn,
+    required this.notificationGlobalService,
+  });
 
   final bool isLoggedIn;
+  final NotificationService notificationGlobalService;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +54,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.teal,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: isLoggedIn ? HomeScreen() : const LoginScreen(),
+      home: isLoggedIn
+          ? HomeScreen(notificationService: notificationGlobalService)
+          : LoginScreen(notificationService: notificationGlobalService),
     );
   }
 }

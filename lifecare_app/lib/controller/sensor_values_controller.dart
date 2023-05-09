@@ -1,35 +1,85 @@
 import 'package:get/get.dart';
 import 'package:lifecare/data/models/sensor_values_model.dart';
+import 'package:lifecare/data/models/socket_sensors_model.dart';
+import 'package:lifecare/data/repository/common_repository.dart';
 
 class SensorValuesController extends GetxController {
-  RxList<SensorsValueModel> sensorsValues = <SensorsValueModel>[
-    SensorsValueModel(
-      dateTime: DateTime.now(),
-      heartBeat: 60,
-      temperature: 97,
-    )
+  CommonRepository commonRepository = CommonRepository();
+
+  RxList<SensorsValueModel> temperatureMinValues = <SensorsValueModel>[
+    SensorsValueModel(value: 97, createdAt: DateTime.now()),
   ].obs;
+  RxDouble temperatureAverage = 0.0.obs;
 
-  void updateSensorValues({
-    required double heartBeat,
-    required double temperature,
-  }) {
-    if (sensorsValues.length >= 40) sensorsValues.removeAt(0);
+  RxList<SensorsValueModel> heartBeatMinValues = <SensorsValueModel>[
+    SensorsValueModel(value: 60, createdAt: DateTime.now())
+  ].obs;
+  RxDouble heartBeatAverage = 0.0.obs;
 
-    if (heartBeat == 0.0 && sensorsValues.isNotEmpty) {
-      heartBeat = sensorsValues.last.heartBeat;
+  RxBool heartBeatLoading = true.obs;
+  RxBool temperatureLoading = true.obs;
+
+  RxList<SensorsValueModel> heartBeatHistory = <SensorsValueModel>[].obs;
+  RxList<SensorsValueModel> temperatureHistory = <SensorsValueModel>[].obs;
+
+  void updateTemperatureValues({required SocketSensorsModel data}) {
+    if (temperatureMinValues.length >= 40) temperatureMinValues.removeAt(0);
+
+    temperatureMinValues.add(data.data);
+    temperatureAverage.value = data.averageValue;
+  }
+
+  void updateHeartBeatValues({required SocketSensorsModel data}) {
+    if (heartBeatMinValues.length >= 40) heartBeatMinValues.removeAt(0);
+
+    heartBeatMinValues.add(data.data);
+    heartBeatAverage.value = data.averageValue;
+  }
+
+  int heartBeatPageNo = 1;
+  int temperaturePageNo = 1;
+
+  Future<void> getHeartBeatHistory() async {
+    heartBeatLoading.value = true;
+
+    List<SensorsValueModel> history =
+        await commonRepository.getHeartBeatHistory();
+
+    heartBeatHistory.value = history;
+
+    heartBeatLoading.value = false;
+  }
+
+  Future<void> getMoreHeartBeatHistory() async {
+    heartBeatPageNo = heartBeatPageNo++;
+
+    List<SensorsValueModel> history =
+        await commonRepository.getHeartBeatHistory(page: heartBeatPageNo);
+
+    for (var element in history) {
+      heartBeatHistory.add(element);
     }
+  }
 
-    if (temperature == 0.0 && sensorsValues.isNotEmpty) {
-      temperature = sensorsValues.last.temperature;
+  Future<void> getTemperatureHistory() async {
+    temperatureLoading.value = true;
+
+    List<SensorsValueModel> history =
+        await commonRepository.getTemperatureHistory();
+
+    temperatureHistory.value = history;
+
+    temperatureLoading.value = false;
+  }
+
+  Future<void> getMoreTemperatureHistory() async {
+    temperaturePageNo = temperaturePageNo++;
+
+    List<SensorsValueModel> history =
+        await commonRepository.getTemperatureHistory(page: temperaturePageNo);
+
+    for (var element in history) {
+      temperatureHistory.add(element);
     }
-
-    sensorsValues.add(
-      SensorsValueModel(
-        heartBeat: heartBeat,
-        temperature: temperature,
-        dateTime: DateTime.now(),
-      ),
-    );
   }
 }
