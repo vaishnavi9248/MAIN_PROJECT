@@ -1,11 +1,13 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
+#include <WiFiClientSecure.h>
+
 #include <DHT.h>
 
-#define WIFI_SSID "realme 5i"
-#define WIFI_PASSWORD "pewo9080"
+#define WIFI_SSID "Galaxy M310366"
+#define WIFI_PASSWORD "9248ychu"
 
-#define SERVER_URL "http://192.168.43.57:5678"
+#define SERVER_URL "https://lifecare-tplw.onrender.com"
 
 #define PULSE_SENSOR_PIN A0
 #define LED_PIN D1
@@ -33,7 +35,7 @@ unsigned long lastHumidityTime = millis();
 unsigned long lastPulseTime = millis();
 
 void setup() {
-  // Serial.begin(9600);
+  Serial.begin(9600);
 
   pinMode(BUTTON_PIN, INPUT);
   pinMode(LED_PIN, OUTPUT);
@@ -75,6 +77,7 @@ void buttonHandle() {
     buttonState = reading;
     if (buttonState == HIGH) {
       digitalWrite(LED_PIN, HIGH);
+      pushRequestServer("pushButton");
     }
   }
   lastButtonState = reading;
@@ -124,33 +127,42 @@ void reconnect_wifi() {
 void connectionState() {
   while (WiFi.status() != WL_CONNECTED) {
     digitalWrite(WIFI_PIN, HIGH);
+    Serial.println("Connecting");
     delay(500);
     digitalWrite(WIFI_PIN, LOW);
     delay(500);
   }
   digitalWrite(WIFI_PIN, HIGH);
+  Serial.println("Connected");
 }
 
 void pushRequestServer(String path) {
+  WiFiClientSecure client;
+  client.setInsecure();
+
   HTTPClient http;
-  http.begin(SERVER_URL + path);
-  http.GET();
-  //  int httpResponseCode = http.GET();
-  //  if (httpResponseCode > 0) {
-  //    Serial.print("HTTP Response onButtonPress code: ");
-  //    Serial.println(httpResponseCode);
-  //  } else {
-  //    Serial.print("Error onButtonPress code: ");
-  //    Serial.println(httpResponseCode);
-  //  }
+  http.begin(client, SERVER_URL + path);
+  //http.GET();
+  int httpResponseCode = http.GET();
+  if (httpResponseCode > 0) {
+    Serial.print("HTTP Response onButtonPress code: ");
+    Serial.println(httpResponseCode);
+  } else {
+    Serial.print("Error onButtonPress code: ");
+    Serial.println(httpResponseCode);
+  }
   http.end();
 }
 
 void sendDataServer(String path, String value) {
-  // Serial.print(path);
-  // Serial.println(value);
+  Serial.print(path);
+  Serial.println(value);
+
+  WiFiClientSecure client;
+  client.setInsecure();
+
   HTTPClient http;
-  http.begin(SERVER_URL + path);
+  http.begin(client, SERVER_URL + path);
   http.addHeader("Content-Type", "application/json");
 
   String requestBody = "{\"value\": " + value + "}";

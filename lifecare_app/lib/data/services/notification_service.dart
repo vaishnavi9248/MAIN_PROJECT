@@ -9,10 +9,12 @@ import 'package:timezone/timezone.dart' as tz;
 class NotificationService {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+
   AndroidNotificationChannel channel = const AndroidNotificationChannel(
     'high_importance_channel',
     'High Importance Notifications',
-    importance: Importance.max,
+    importance: Importance.high,
+    playSound: true,
   );
 
   Future<void> init() async {
@@ -82,12 +84,9 @@ class NotificationService {
           android: AndroidNotificationDetails(
             channel.id,
             channel.name,
-            playSound: true,
             importance: Importance.high,
             priority: Priority.high,
-            audioAttributesUsage: AudioAttributesUsage.alarm,
-            enableVibration: true,
-            additionalFlags: Int32List.fromList(<int>[4]),
+            playSound: true,
           ),
         ),
       );
