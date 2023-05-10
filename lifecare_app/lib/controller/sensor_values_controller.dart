@@ -10,11 +10,15 @@ class SensorValuesController extends GetxController {
     SensorsValueModel(value: 97, createdAt: DateTime.now()),
   ].obs;
   RxDouble temperatureAverage = 0.0.obs;
+  RxDouble temperatureMin = 0.0.obs;
+  RxDouble temperatureMax = 0.0.obs;
 
   RxList<SensorsValueModel> heartBeatMinValues = <SensorsValueModel>[
     SensorsValueModel(value: 60, createdAt: DateTime.now())
   ].obs;
   RxDouble heartBeatAverage = 0.0.obs;
+  RxDouble heartBeatMin = 0.0.obs;
+  RxDouble heartBeatMax = 0.0.obs;
 
   RxBool heartBeatLoading = true.obs;
   RxBool temperatureLoading = true.obs;
@@ -27,6 +31,12 @@ class SensorValuesController extends GetxController {
 
     temperatureMinValues.add(data.data);
     temperatureAverage.value = data.averageValue;
+
+    List<SensorsValueModel> temp = [...temperatureMinValues];
+    temp.sort((a, b) => a.value.compareTo(b.value));
+
+    temperatureMin.value = temp.length > 2 ? temp.first.value : 97.0;
+    temperatureMax.value = temp.length > 2 ? temp.last.value : 99.0;
   }
 
   void updateHeartBeatValues({required SocketSensorsModel data}) {
@@ -34,6 +44,11 @@ class SensorValuesController extends GetxController {
 
     heartBeatMinValues.add(data.data);
     heartBeatAverage.value = data.averageValue;
+
+    List<SensorsValueModel> temp = [...heartBeatMinValues];
+    temp.sort((a, b) => a.value.compareTo(b.value));
+    heartBeatMin.value = temp.length > 2 ? temp.first.value : 60.0;
+    heartBeatMax.value = temp.length > 2 ? temp.last.value : 100.0;
   }
 
   int heartBeatPageNo = 1;

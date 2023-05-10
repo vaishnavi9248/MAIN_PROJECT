@@ -67,7 +67,7 @@ const addTemperature = (req, res) => {
           const io = req.io;
           const averageValue = parseFloat(result[0].averageValue.toFixed(2));
 
-          if (averageValue > 99 && NewData.value > 99) {
+          if (averageValue > 90 && NewData.value > 90) {
             const data = {
               message: "High heat count",
               data: NewData,
@@ -85,10 +85,10 @@ const addTemperature = (req, res) => {
               },
             };
 
-            sendFCMToDevices(message, req, res);
+            sendFCMToDevices(message, 1, req);
 
             return res.json(data);
-          } else if (averageValue < 97 && NewData.value > 97) {
+          } else if (averageValue < 78 && NewData.value < 78) {
             const data = {
               message: "Low heat count",
               data: NewData,
@@ -106,7 +106,7 @@ const addTemperature = (req, res) => {
               },
             };
 
-            sendFCMToDevices(message, req, res);
+            sendFCMToDevices(message, 2, req);
 
             return res.json(data);
           } else {
@@ -212,10 +212,10 @@ const addHeartbeat = (req, res) => {
               },
             };
 
-            sendFCMToDevices(message, req, res);
+            sendFCMToDevices(message, 3, req);
 
             return res.json(data);
-          } else if (averageValue < 60 && NewData.value > 60) {
+          } else if (averageValue < 60 && NewData.value < 60) {
             const data = {
               message: "Low heartbeat count",
               data: NewData,
@@ -233,7 +233,7 @@ const addHeartbeat = (req, res) => {
               },
             };
 
-            sendFCMToDevices(message, req, res);
+            sendFCMToDevices(message, NewData.value, req);
 
             return res.json(data);
           } else {
@@ -266,7 +266,7 @@ const pushButtonClicked = (req, res) => {
     },
   };
 
-  sendFCMToDevices(message, req, res);
+  sendFCMToDevices(message, 0, req);
 
   const result = {
     message: "Push sent",
@@ -275,7 +275,7 @@ const pushButtonClicked = (req, res) => {
   return res.json(result);
 };
 
-sendFCMToDevices = (message, req) => {
+sendFCMToDevices = (message, values, req) => {
   const tokens = [];
 
   FCMToken.find()
@@ -285,6 +285,7 @@ sendFCMToDevices = (message, req) => {
       });
 
       message.tokens = tokens;
+      message.data = { values: values.toString() };
 
       req.admin
         .messaging()

@@ -1,5 +1,4 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:lifecare/data/models/reminder_model.dart';
 import 'package:lifecare/util/custom_print.dart';
@@ -76,8 +75,12 @@ class NotificationService {
   void notificationShow(RemoteMessage? message) async {
     try {
       RemoteNotification? notification = message?.notification;
+
+      int id = int.parse(
+          message?.data["values"] ?? notification.hashCode.toString());
+
       await flutterLocalNotificationsPlugin.show(
-        notification.hashCode,
+        id,
         notification?.title,
         notification?.body,
         NotificationDetails(
@@ -87,6 +90,7 @@ class NotificationService {
             importance: Importance.high,
             priority: Priority.high,
             playSound: true,
+            // additionalFlags: Int32List.fromList(<int>[4]),
           ),
         ),
       );
@@ -116,7 +120,7 @@ class NotificationService {
             sound: const UriAndroidNotificationSound("alarm"),
             audioAttributesUsage: AudioAttributesUsage.alarm,
             enableVibration: true,
-            additionalFlags: Int32List.fromList(<int>[3]),
+            //additionalFlags: Int32List.fromList(<int>[3]),
           ),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,

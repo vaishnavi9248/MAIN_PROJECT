@@ -120,20 +120,13 @@ class HomeScreen extends StatelessWidget {
                   child: Obx(
                     () => Sparkline(
                       data: sensorValueController.heartBeatMinValues
-                          .map((element) {
-                        if (element.value > 100.0) {
-                          return 100.0;
-                        } else if (element.value < 60.0) {
-                          return 60.0;
-                        } else {
-                          return element.value;
-                        }
-                      }).toList(),
+                          .map((element) => element.value)
+                          .toList(),
                       enableGridLines: true,
                       // fillMode: FillMode.below,
                       // fillColor: Colors.red.withOpacity(0.5),
-                      min: 60,
-                      max: 100,
+                      min: sensorValueController.heartBeatMin.value,
+                      max: sensorValueController.heartBeatMax.value,
                       gridLineAmount: 9,
                     ),
                   ),
@@ -157,21 +150,14 @@ class HomeScreen extends StatelessWidget {
                   child: Obx(
                     () => Sparkline(
                       data: sensorValueController.temperatureMinValues
-                          .map((element) {
-                        if (element.value > 99.0) {
-                          return 99.0;
-                        } else if (element.value < 97.0) {
-                          return 97.0;
-                        } else {
-                          return element.value;
-                        }
-                      }).toList(),
+                          .map((element) => element.value)
+                          .toList(),
                       enableGridLines: true,
                       //fillMode: FillMode.below,
                       //fillColor: Colors.red.withOpacity(0.5),
                       gridLineAmount: 11,
-                      max: 99,
-                      min: 97,
+                      min: sensorValueController.temperatureMin.value,
+                      max: sensorValueController.temperatureMax.value,
                     ),
                   ),
                 ),
