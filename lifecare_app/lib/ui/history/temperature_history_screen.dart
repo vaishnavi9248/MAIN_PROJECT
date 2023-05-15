@@ -40,7 +40,7 @@ class _TemperatureHistoryScreenState extends State<TemperatureHistoryScreen> {
     sensorValueController.getTemperatureHistory();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("History"),
+        title: const Text("Temperature History"),
         centerTitle: false,
         systemOverlayStyle:
             const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
@@ -76,7 +76,7 @@ class _TemperatureHistoryScreenState extends State<TemperatureHistoryScreen> {
                         ),
                         const SizedBox(height: 4.0),
                         Text(
-                          "Avg value: ${sensorValueController.temperatureAverage} BPM",
+                          "Avg value: ${sensorValueController.temperatureAverage} °f",
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18.0),
                         ),
@@ -85,15 +85,15 @@ class _TemperatureHistoryScreenState extends State<TemperatureHistoryScreen> {
                   ),
                 ),
                 const Divider(),
-                Padding(
-                  padding: const EdgeInsets.only(
+                const Padding(
+                  padding: EdgeInsets.only(
                     top: 12.0,
                     bottom: 4.0,
                     left: 16.0,
                     right: 16.0,
                   ),
                   child: Row(
-                    children: const [
+                    children: [
                       SizedBox(width: 18),
                       Text(
                         "Date",
@@ -102,7 +102,7 @@ class _TemperatureHistoryScreenState extends State<TemperatureHistoryScreen> {
                       ),
                       Spacer(),
                       Text(
-                        "BPM",
+                        "°f",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18.0),
                         textAlign: TextAlign.end,

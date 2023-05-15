@@ -39,7 +39,7 @@ class _HeartBeatHistoryScreenState extends State<HeartBeatHistoryScreen> {
     sensorValueController.getHeartBeatHistory();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("History"),
+        title: const Text("Heartbeat History"),
         centerTitle: false,
         systemOverlayStyle:
             const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
@@ -84,15 +84,15 @@ class _HeartBeatHistoryScreenState extends State<HeartBeatHistoryScreen> {
                   ),
                 ),
                 const Divider(),
-                Padding(
-                  padding: const EdgeInsets.only(
+                const Padding(
+                  padding: EdgeInsets.only(
                     top: 12.0,
                     bottom: 4.0,
                     left: 16.0,
                     right: 16.0,
                   ),
                   child: Row(
-                    children: const [
+                    children: [
                       SizedBox(width: 18),
                       Text(
                         "Date",
