@@ -76,7 +76,7 @@ class _TemperatureHistoryScreenState extends State<TemperatureHistoryScreen> {
                         ),
                         const SizedBox(height: 4.0),
                         Text(
-                          "Avg value: ${sensorValueController.temperatureAverage} °f",
+                          "Avg value: ${sensorValueController.temperatureAverage} °F",
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18.0),
                         ),
@@ -85,15 +85,15 @@ class _TemperatureHistoryScreenState extends State<TemperatureHistoryScreen> {
                   ),
                 ),
                 const Divider(),
-                const Padding(
-                  padding: EdgeInsets.only(
+                Padding(
+                  padding: const EdgeInsets.only(
                     top: 12.0,
                     bottom: 4.0,
                     left: 16.0,
                     right: 16.0,
                   ),
                   child: Row(
-                    children: [
+                    children: const [
                       SizedBox(width: 18),
                       Text(
                         "Date",
@@ -102,7 +102,7 @@ class _TemperatureHistoryScreenState extends State<TemperatureHistoryScreen> {
                       ),
                       Spacer(),
                       Text(
-                        "°f",
+                        "°F",
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18.0),
                         textAlign: TextAlign.end,
