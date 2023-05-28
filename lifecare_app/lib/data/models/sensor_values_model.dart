@@ -13,7 +13,7 @@ class SensorsValueModel {
       SensorsValueModel(
         id: json["_id"],
         value: double.parse(json["value"].toString()),
-        createdAt: DateTime.parse(json["createdAt"]),
+        createdAt: DateTime.parse(json["createdAt"]).toLocal(),
       );
 
   factory SensorsValueModel.initial() => SensorsValueModel(

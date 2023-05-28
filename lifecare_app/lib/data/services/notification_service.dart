@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:lifecare/data/models/reminder_model.dart';
 import 'package:lifecare/util/custom_print.dart';
@@ -12,8 +13,11 @@ class NotificationService {
   AndroidNotificationChannel channel = const AndroidNotificationChannel(
     'high_importance_channel',
     'High Importance Notifications',
-    importance: Importance.high,
-    playSound: true,
+    importance: Importance.max,
+    enableLights: true,
+    enableVibration: true,
+    // playSound: true,
+    // sound: RawResourceAndroidNotificationSound("alarm"),
   );
 
   Future<void> init() async {
@@ -83,15 +87,24 @@ class NotificationService {
         id,
         notification?.title,
         notification?.body,
-        NotificationDetails(
+        const NotificationDetails(
           android: AndroidNotificationDetails(
-            channel.id,
-            channel.name,
-            importance: Importance.high,
-            priority: Priority.high,
-            playSound: true,
-            // additionalFlags: Int32List.fromList(<int>[4]),
-          ),
+              'channelId1', 'high_importance_channel',
+              importance: Importance.max,
+              priority: Priority.high,
+              enableLights: true,
+              fullScreenIntent: true,
+              enableVibration: true,
+              audioAttributesUsage: AudioAttributesUsage.alarm,
+              visibility: NotificationVisibility.public,
+              // playSound: true,
+              // sound: RawResourceAndroidNotificationSound("alarm"),
+              color: Color.fromARGB(255, 255, 0, 0),
+              ledColor: Color.fromARGB(255, 255, 0, 0),
+              ledOnMs: 1000,
+              ledOffMs: 500
+              // additionalFlags: Int32List.fromList(<int>[4]),
+              ),
         ),
       );
     } catch (e) {

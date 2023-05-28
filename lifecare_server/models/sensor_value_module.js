@@ -8,7 +8,7 @@ const sensorValue = new mongoose.Schema({
     required: true,
   },
 
-  createdAt: { type: Date, required: true, default: moment().format() },
+  createdAt: { type: Date, required: true, default: Date.now },
 });
 
 const temperature = mongoose.model("temperature", sensorValue);

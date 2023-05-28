@@ -12,7 +12,6 @@ const getTemperatureHistory = (req, res) => {
     .skip((page - 1) * limit)
     .limit(limit)
     .select("-__v")
-    .sort({ createdAt: "desc" })
     .then((data) => {
       const currentCount = data.length;
       Temperature.countDocuments().then((totalCount) => {
@@ -139,7 +138,6 @@ const getHeartBeatHistory = (req, res) => {
     .skip((page - 1) * limit)
     .limit(limit)
     .select("-__v")
-    .sort({ createdAt: "desc" })
     .then((data) => {
       const currentCount = data.length;
       Heartbeat.countDocuments().then((totalCount) => {
@@ -269,7 +267,7 @@ const pushButtonClicked = (req, res) => {
   sendFCMToDevices(message, 0, req);
 
   const result = {
-    message: "Push sent",
+    data: "Push sent",
   };
 
   return res.json(result);
@@ -298,6 +296,8 @@ sendFCMToDevices = (message, values, req) => {
           };
 
           console.log(req.url, " ", req.method, "", result);
+
+          return result;
         })
         .catch((error) => {
           const result = {
@@ -306,6 +306,8 @@ sendFCMToDevices = (message, values, req) => {
           };
 
           console.log(req.url, " ", req.method, "", result);
+
+          return result;
         });
     })
     .catch((error) => {
@@ -315,6 +317,8 @@ sendFCMToDevices = (message, values, req) => {
       };
 
       console.log(req.url, " ", req.method, "", result);
+
+      return result;
     });
 };
 

@@ -5,15 +5,16 @@ import 'package:get/get.dart';
 import 'package:lifecare/const/preference_key.dart';
 import 'package:lifecare/data/services/notification_service.dart';
 import 'package:lifecare/data/services/shared_pref.dart';
+import 'package:lifecare/firebase_options.dart';
 import 'package:lifecare/ui/home/home_screen.dart';
 import 'package:lifecare/ui/login/login_screen.dart';
 import 'package:lifecare/util/custom_print.dart';
 
-import 'firebase_options.dart';
-
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
   customDebugPrint("_firebaseMessagingBackgroundHandler ${message.toMap()}");
+
   //notificationGlobalService.notificationShow(message);
 }
 
@@ -25,7 +26,7 @@ Future<void> main() async {
 
   NotificationService notificationGlobalService = NotificationService();
 
-  notificationGlobalService.init();
+  await notificationGlobalService.init();
 
   bool isLoggedIn = await SharedPref().getBool(key: PreferenceKey.isLoggedIn);
 
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
       title: 'LifeCare',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        //useMaterial3: true,
         primarySwatch: Colors.teal,
         scaffoldBackgroundColor: Colors.white,
       ),

@@ -40,7 +40,7 @@ class HomeScreen extends StatelessWidget {
             icon: const Icon(Icons.more_vert),
             padding: EdgeInsets.zero,
             itemBuilder: (BuildContext context) => [
-              //PopupMenuItem(child: const Text("Alert"), onTap: () {}),
+              PopupMenuItem(child: const Text("Alert"), onTap: () {}),
               PopupMenuItem(
                   child: const Text("HeartBeat History"),
                   onTap: () async {
