@@ -121,7 +121,7 @@ class NotificationService {
       await flutterLocalNotificationsPlugin.zonedSchedule(
         reminderModel.id.hashCode,
         reminderModel.title,
-        reminderModel.message,
+        "reminderModel.message",
         tz.TZDateTime.from(reminderModel.dateTime, tz.local),
         NotificationDetails(
           android: AndroidNotificationDetails(

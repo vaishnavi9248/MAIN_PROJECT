@@ -40,7 +40,7 @@ class CommonRepository {
   }) async {
     try {
       var response =
-      await _httpHelper.get("${Api.temperature}?limit=$limit&page=$page");
+          await _httpHelper.get("${Api.temperature}?limit=$limit&page=$page");
 
       if (response.runtimeType.toString() == "Response") {
         List<dynamic> data = jsonDecode(response.body)["data"];

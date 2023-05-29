@@ -66,7 +66,7 @@ class SensorValuesController extends GetxController {
   }
 
   Future<void> getMoreHeartBeatHistory() async {
-    heartBeatPageNo = heartBeatPageNo++;
+    heartBeatPageNo = heartBeatPageNo + 1;
 
     List<SensorsValueModel> history =
         await commonRepository.getHeartBeatHistory(page: heartBeatPageNo);
@@ -88,7 +88,7 @@ class SensorValuesController extends GetxController {
   }
 
   Future<void> getMoreTemperatureHistory() async {
-    temperaturePageNo = temperaturePageNo++;
+    temperaturePageNo = temperaturePageNo + 1;
 
     List<SensorsValueModel> history =
         await commonRepository.getTemperatureHistory(page: temperaturePageNo);
