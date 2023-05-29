@@ -26,6 +26,13 @@ class SensorValuesController extends GetxController {
   RxList<SensorsValueModel> heartBeatHistory = <SensorsValueModel>[].obs;
   RxList<SensorsValueModel> temperatureHistory = <SensorsValueModel>[].obs;
 
+  Rx<SensorsValueModel> heartBeatWarningValue = SensorsValueModel.initial().obs;
+  Rx<SensorsValueModel> temperatureWarningValue =
+      SensorsValueModel.initial().obs;
+
+  int heartBeatPageNo = 1;
+  int temperaturePageNo = 1;
+
   void updateTemperatureValues({required SocketSensorsModel data}) {
     if (temperatureMinValues.length >= 40) temperatureMinValues.removeAt(0);
 
@@ -51,9 +58,6 @@ class SensorValuesController extends GetxController {
     heartBeatMax.value = temp.length > 2 ? temp.last.value : 100.0;
   }
 
-  int heartBeatPageNo = 1;
-  int temperaturePageNo = 1;
-
   Future<void> getHeartBeatHistory() async {
     heartBeatLoading.value = true;
 
@@ -71,9 +75,13 @@ class SensorValuesController extends GetxController {
     List<SensorsValueModel> history =
         await commonRepository.getHeartBeatHistory(page: heartBeatPageNo);
 
+    List<SensorsValueModel> data = heartBeatHistory.toList();
+
     for (var element in history) {
-      heartBeatHistory.add(element);
+      data.add(element);
     }
+
+    heartBeatHistory.value = data;
   }
 
   Future<void> getTemperatureHistory() async {
@@ -93,8 +101,18 @@ class SensorValuesController extends GetxController {
     List<SensorsValueModel> history =
         await commonRepository.getTemperatureHistory(page: temperaturePageNo);
 
+    List<SensorsValueModel> data = temperatureHistory.toList();
+
     for (var element in history) {
-      temperatureHistory.add(element);
+      data.add(element);
     }
+
+    temperatureHistory.value = data;
   }
+
+  void updateHeartBeatWarning({required SocketSensorsModel data}) =>
+      heartBeatWarningValue.value = data.data;
+
+  void updateTemperatureWarning({required SocketSensorsModel data}) =>
+      temperatureWarningValue.value = data.data;
 }

@@ -85,16 +85,10 @@ class _TemperatureHistoryScreenState extends State<TemperatureHistoryScreen> {
                   ),
                 ),
                 const Divider(),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 12.0,
-                    bottom: 4.0,
-                    left: 16.0,
-                    right: 16.0,
-                  ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(12.0, 2.0, 16.0, 2.0),
                   child: Row(
-                    children: const [
-                      SizedBox(width: 18),
+                    children: [
                       Text(
                         "Date",
                         style: TextStyle(
@@ -107,7 +101,6 @@ class _TemperatureHistoryScreenState extends State<TemperatureHistoryScreen> {
                             fontWeight: FontWeight.bold, fontSize: 18.0),
                         textAlign: TextAlign.end,
                       ),
-                      SizedBox(width: 18),
                     ],
                   ),
                 ),
@@ -131,8 +124,10 @@ class _TemperatureHistoryScreenState extends State<TemperatureHistoryScreen> {
                                       sensorValueController
                                           .temperatureHistory[newIndex];
 
-                                  return ListTile(
-                                    title: Row(
+                                  return Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        12.0, 2.0, 16.0, 2.0),
+                                    child: Row(
                                       children: [
                                         Text("${index + 1})"),
                                         const SizedBox(width: 10),
@@ -144,7 +139,6 @@ class _TemperatureHistoryScreenState extends State<TemperatureHistoryScreen> {
                                           "${sensorsValueModel.value}",
                                           textAlign: TextAlign.end,
                                         ),
-                                        const SizedBox(width: 17),
                                       ],
                                     ),
                                   );

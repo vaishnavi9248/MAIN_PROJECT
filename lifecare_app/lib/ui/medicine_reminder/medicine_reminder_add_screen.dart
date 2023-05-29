@@ -26,11 +26,7 @@ class _MedicineReminderAddScreenState extends State<MedicineReminderAddScreen> {
   DateTime reminderTime = DateTime.now();
 
   List<DaysEnum> days = [];
-  List<MedicineDetails> medicines = [
-    MedicineDetails(name: "Dolo", count: 1),
-    MedicineDetails(name: "Amoxicillin", count: 1),
-    MedicineDetails(name: "Ocaset", count: 1),
-  ];
+  List<MedicineDetails> medicines = [];
 
   @override
   void initState() {

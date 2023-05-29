@@ -7,6 +7,7 @@ import 'package:lifecare/controller/sensor_values_controller.dart';
 import 'package:lifecare/controller/socket_controller.dart';
 import 'package:lifecare/data/services/notification_service.dart';
 import 'package:lifecare/data/services/shared_pref.dart';
+import 'package:lifecare/ui/alert/alert_screen.dart';
 import 'package:lifecare/ui/contacts/contacts_screen.dart';
 import 'package:lifecare/ui/history/heartbeat_history_screen.dart';
 import 'package:lifecare/ui/history/temperature_history_screen.dart';
@@ -85,7 +86,12 @@ class HomeScreen extends StatelessWidget {
                     await Future.delayed(const Duration(milliseconds: 1));
                     Get.to(() => const ContactsScreen());
                   }),
-              PopupMenuItem(child: const Text("Alert"), onTap: () {}),
+              PopupMenuItem(
+                  child: const Text("Alert"),
+                  onTap: () async {
+                    await Future.delayed(const Duration(milliseconds: 1));
+                    Get.to(() => const AlertScreen());
+                  }),
               PopupMenuItem(
                   child: const Text("Sign-out"),
                   onTap: () async {

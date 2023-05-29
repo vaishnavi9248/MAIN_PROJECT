@@ -85,15 +85,9 @@ class _HeartBeatHistoryScreenState extends State<HeartBeatHistoryScreen> {
                 ),
                 const Divider(),
                 const Padding(
-                  padding: EdgeInsets.only(
-                    top: 12.0,
-                    bottom: 4.0,
-                    left: 16.0,
-                    right: 16.0,
-                  ),
+                  padding: EdgeInsets.fromLTRB(12.0, 2.0, 16.0, 2.0),
                   child: Row(
                     children: [
-                      SizedBox(width: 18),
                       Text(
                         "Date",
                         style: TextStyle(
@@ -106,7 +100,6 @@ class _HeartBeatHistoryScreenState extends State<HeartBeatHistoryScreen> {
                             fontWeight: FontWeight.bold, fontSize: 18.0),
                         textAlign: TextAlign.end,
                       ),
-                      SizedBox(width: 18),
                     ],
                   ),
                 ),
@@ -130,8 +123,10 @@ class _HeartBeatHistoryScreenState extends State<HeartBeatHistoryScreen> {
                                       sensorValueController
                                           .heartBeatHistory[newIndex];
 
-                                  return ListTile(
-                                    title: Row(
+                                  return Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        12.0, 2.0, 16.0, 2.0),
+                                    child: Row(
                                       children: [
                                         Text("${index + 1})"),
                                         const SizedBox(width: 10),
@@ -141,9 +136,8 @@ class _HeartBeatHistoryScreenState extends State<HeartBeatHistoryScreen> {
                                         const Spacer(),
                                         Text(
                                           "${sensorsValueModel.value}",
-                                          textAlign: TextAlign.end,
+                                          textAlign: TextAlign.start,
                                         ),
-                                        const SizedBox(width: 17),
                                       ],
                                     ),
                                   );

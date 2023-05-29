@@ -49,6 +49,16 @@ class SocketController extends GetxController {
           data: SocketSensorsModel.fromJson(data));
     });
 
+    socket.on("heartBeatWarning", (data) {
+      sensorValueController.updateHeartBeatWarning(
+          data: SocketSensorsModel.fromJson(data));
+    });
+
+    socket.on("temperatureWarning", (data) {
+      sensorValueController.updateTemperatureWarning(
+          data: SocketSensorsModel.fromJson(data));
+    });
+
     //receive new messages
     // socket.on("message", message);
 

@@ -9,7 +9,7 @@ class CommonRepository {
   final HttpHelper _httpHelper = HttpHelper();
 
   Future<List<SensorsValueModel>> getHeartBeatHistory({
-    int limit = 30,
+    int limit = 50,
     int page = 1,
   }) async {
     try {
@@ -35,7 +35,7 @@ class CommonRepository {
   }
 
   Future<List<SensorsValueModel>> getTemperatureHistory({
-    int limit = 30,
+    int limit = 50,
     int page = 1,
   }) async {
     try {

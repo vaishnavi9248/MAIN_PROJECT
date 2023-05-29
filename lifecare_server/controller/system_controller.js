@@ -76,6 +76,7 @@ const addTemperature = (req, res) => {
             console.log(req.url, " ", req.method, " ", data);
 
             io.emit("newTemperature", data);
+            io.emit("temperatureWarning", data);
 
             const message = {
               notification: {
@@ -97,6 +98,7 @@ const addTemperature = (req, res) => {
             console.log(req.url, " ", req.method, " ", data);
 
             io.emit("newTemperature", data);
+            io.emit("temperatureWarning", data);
 
             const message = {
               notification: {
@@ -202,6 +204,7 @@ const addHeartbeat = (req, res) => {
             console.log(req.url, " ", req.method, " ", data);
 
             io.emit("newHeartBeat", data);
+            io.emit("heartBeatWarning", data);
 
             const message = {
               notification: {
@@ -223,6 +226,7 @@ const addHeartbeat = (req, res) => {
             console.log(req.url, " ", req.method, " ", data);
 
             io.emit("newHeartBeat", data);
+            io.emit("heartBeatWarning", data);
 
             const message = {
               notification: {
