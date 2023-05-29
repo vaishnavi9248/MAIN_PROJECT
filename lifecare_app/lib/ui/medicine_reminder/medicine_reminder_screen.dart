@@ -5,24 +5,24 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:lifecare/bloc/reminder/reminder_hydrated_cubit.dart';
 import 'package:lifecare/data/enum/days_enum.dart';
-import 'package:lifecare/data/models/reminder_model.dart';
+import 'package:lifecare/data/models/medicine_reminder_model.dart';
 import 'package:lifecare/data/services/notification_service.dart';
-import 'package:lifecare/ui/reminder/reminder_add_screen.dart';
+import 'package:lifecare/ui/medicine_reminder/medicine_reminder_add_screen.dart';
 
-class ReminderScreen extends StatefulWidget {
-  const ReminderScreen({Key? key, required this.notificationService})
+class MedicineReminderScreen extends StatefulWidget {
+  const MedicineReminderScreen({Key? key, required this.notificationService})
       : super(key: key);
 
   final NotificationService notificationService;
 
   @override
-  State<ReminderScreen> createState() => _ReminderScreenState();
+  State<MedicineReminderScreen> createState() => _MedicineReminderScreenState();
 }
 
-class _ReminderScreenState extends State<ReminderScreen> {
+class _MedicineReminderScreenState extends State<MedicineReminderScreen> {
   bool loading = true;
 
-  List<ReminderModel> reminders = [];
+  List<MedicineReminderModel> reminders = [];
 
   @override
   void initState() {
@@ -34,8 +34,8 @@ class _ReminderScreenState extends State<ReminderScreen> {
   Future<void> getReminder() async {
     setState(() => loading = true);
 
-    reminders =
-        await BlocProvider.of<ReminderHydratedCubit>(context).getReminders();
+    reminders = await BlocProvider.of<ReminderHydratedCubit>(context)
+        .getMedicineReminders();
     reminders.sort((a, b) => a.dateTime.compareTo(b.dateTime));
 
     setState(() => loading = false);
@@ -45,7 +45,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("General Reminder"),
+        title: const Text("Medicine Reminder"),
         centerTitle: false,
         systemOverlayStyle:
             const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
@@ -55,7 +55,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           var result = await Get.bottomSheet(
-            const ReminderAddScreen(),
+            const MedicineReminderAddScreen(),
             isScrollControlled: true,
           );
 
@@ -75,7 +75,7 @@ class _ReminderScreenState extends State<ReminderScreen> {
                       shrinkWrap: true,
                       itemCount: reminders.length,
                       itemBuilder: (BuildContext context, int index) {
-                        ReminderModel reminder = reminders[index];
+                        MedicineReminderModel reminder = reminders[index];
 
                         final sortedRepeaters =
                             reminder.repeat.toSet().toList();
@@ -86,7 +86,9 @@ class _ReminderScreenState extends State<ReminderScreen> {
                         return InkWell(
                           onTap: () async {
                             var result = await Get.bottomSheet(
-                              ReminderAddScreen(reminderModel: reminder),
+                              MedicineReminderAddScreen(
+                                reminderModel: reminder,
+                              ),
                               isScrollControlled: true,
                             );
 
@@ -131,6 +133,14 @@ class _ReminderScreenState extends State<ReminderScreen> {
                                         .map((e) => e.titleShort)
                                         .toList()
                                         .join(", ")),
+                                const SizedBox(height: 4.0),
+                                Text(
+                                  reminder.medicineList
+                                      .map((e) => e.name)
+                                      .toList()
+                                      .join(", "),
+                                  maxLines: 1,
+                                ),
                               ],
                             ),
                           ),

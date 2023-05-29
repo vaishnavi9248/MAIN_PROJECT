@@ -12,6 +12,7 @@ import 'package:lifecare/ui/history/heartbeat_history_screen.dart';
 import 'package:lifecare/ui/history/temperature_history_screen.dart';
 import 'package:lifecare/ui/hospitals/hospital_screen.dart';
 import 'package:lifecare/ui/login/login_screen.dart';
+import 'package:lifecare/ui/medicine_reminder/medicine_reminder_screen.dart';
 import 'package:lifecare/ui/reminder/reminder_screen.dart';
 import 'package:lifecare/ui/reports/report_screen.dart';
 import 'package:lifecare/util/show_custom_snackbar.dart';
@@ -40,13 +41,6 @@ class HomeScreen extends StatelessWidget {
             icon: const Icon(Icons.more_vert),
             padding: EdgeInsets.zero,
             itemBuilder: (BuildContext context) => [
-              PopupMenuItem(child: const Text("Alert"), onTap: () {}),
-              PopupMenuItem(
-                  child: const Text("HeartBeat History"),
-                  onTap: () async {
-                    await Future.delayed(const Duration(milliseconds: 1));
-                    Get.to(() => const HeartBeatHistoryScreen());
-                  }),
               PopupMenuItem(
                   child: const Text("Temperature History"),
                   onTap: () async {
@@ -54,13 +48,20 @@ class HomeScreen extends StatelessWidget {
                     Get.to(() => const TemperatureHistoryScreen());
                   }),
               PopupMenuItem(
-                  child: const Text("Reports"),
+                  child: const Text("HeartBeat History"),
                   onTap: () async {
                     await Future.delayed(const Duration(milliseconds: 1));
-                    Get.to(() => const ReportScreen());
+                    Get.to(() => const HeartBeatHistoryScreen());
                   }),
               PopupMenuItem(
-                  child: const Text("Reminder"),
+                  child: const Text("Medicine Reminder"),
+                  onTap: () async {
+                    await Future.delayed(const Duration(milliseconds: 1));
+                    Get.to(() => MedicineReminderScreen(
+                        notificationService: notificationService));
+                  }),
+              PopupMenuItem(
+                  child: const Text("General Reminder"),
                   onTap: () async {
                     await Future.delayed(const Duration(milliseconds: 1));
                     Get.to(() => ReminderScreen(
@@ -73,11 +74,18 @@ class HomeScreen extends StatelessWidget {
                     Get.to(() => const HospitalScreen());
                   }),
               PopupMenuItem(
+                  child: const Text("Reports"),
+                  onTap: () async {
+                    await Future.delayed(const Duration(milliseconds: 1));
+                    Get.to(() => const ReportScreen());
+                  }),
+              PopupMenuItem(
                   child: const Text("Contacts"),
                   onTap: () async {
                     await Future.delayed(const Duration(milliseconds: 1));
                     Get.to(() => const ContactsScreen());
                   }),
+              PopupMenuItem(child: const Text("Alert"), onTap: () {}),
               PopupMenuItem(
                   child: const Text("Sign-out"),
                   onTap: () async {

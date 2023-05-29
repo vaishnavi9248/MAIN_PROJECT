@@ -19,6 +19,8 @@ class _ReminderAddScreenState extends State<ReminderAddScreen> {
 
   TextEditingController titleController = TextEditingController();
 
+  DateTime reminderTime = DateTime.now();
+
   List<DaysEnum> days = [];
 
   @override
@@ -31,8 +33,6 @@ class _ReminderAddScreenState extends State<ReminderAddScreen> {
 
     super.initState();
   }
-
-  DateTime reminderTime = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
