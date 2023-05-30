@@ -26,7 +26,7 @@ class SensorsValueModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['_id'] = id;
     data['value'] = value;
-    data['createdAt'] = createdAt;
+    data['createdAt'] = createdAt.toString();
     return data;
   }
 }

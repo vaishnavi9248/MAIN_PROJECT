@@ -12,6 +12,7 @@ const getTemperatureHistory = (req, res) => {
     .skip((page - 1) * limit)
     .limit(limit)
     .select("-__v")
+    .sort({ createdAt: -1 })
     .then((data) => {
       const currentCount = data.length;
       Temperature.countDocuments().then((totalCount) => {
@@ -140,6 +141,7 @@ const getHeartBeatHistory = (req, res) => {
     .skip((page - 1) * limit)
     .limit(limit)
     .select("-__v")
+    .sort({ createdAt: -1 })
     .then((data) => {
       const currentCount = data.length;
       Heartbeat.countDocuments().then((totalCount) => {

@@ -110,9 +110,9 @@ class SensorValuesController extends GetxController {
     temperatureHistory.value = data;
   }
 
-  void updateHeartBeatWarning({required SocketSensorsModel data}) =>
-      heartBeatWarningValue.value = data.data;
+  void updateHeartBeatWarning({required SensorsValueModel data}) =>
+      heartBeatWarningValue.value = data;
 
-  void updateTemperatureWarning({required SocketSensorsModel data}) =>
-      temperatureWarningValue.value = data.data;
+  void updateTemperatureWarning({required SensorsValueModel data}) =>
+      temperatureWarningValue.value = data;
 }

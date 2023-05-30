@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:lifecare/bloc/reminder/reminder_hydrated_cubit.dart';
 import 'package:lifecare/controller/sensor_values_controller.dart';
 import 'package:lifecare/ui/contacts/contacts_screen.dart';
 import 'package:lifecare/ui/history/heartbeat_history_screen.dart';
 import 'package:lifecare/ui/history/temperature_history_screen.dart';
 import 'package:lifecare/ui/hospitals/hospital_screen.dart';
+import 'package:lifecare/util/custom_print.dart';
 
 class AlertScreen extends StatefulWidget {
   const AlertScreen({Key? key}) : super(key: key);
@@ -17,6 +20,26 @@ class AlertScreen extends StatefulWidget {
 
 class _AlertScreenState extends State<AlertScreen> {
   final SensorValuesController sensorValueController = Get.find();
+
+  @override
+  void initState() {
+    if (sensorValueController.heartBeatWarningValue.value.id.isEmpty) {
+      sensorValueController.updateHeartBeatWarning(
+          data: context.read<ReminderHydratedCubit>().getHeartBeatAlertValue());
+    }
+
+    customDebugPrint(
+        "getTemperatureAlertValue() ${context.read<ReminderHydratedCubit>().getTemperatureAlertValue().toJson()}"
+        "${context.read<ReminderHydratedCubit>().getHeartBeatAlertValue().toJson()}");
+
+    if (sensorValueController.temperatureWarningValue.value.id.isEmpty) {
+      sensorValueController.updateTemperatureWarning(
+          data:
+              context.read<ReminderHydratedCubit>().getTemperatureAlertValue());
+    }
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

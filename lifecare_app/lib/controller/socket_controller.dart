@@ -1,6 +1,8 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:lifecare/bloc/reminder/reminder_hydrated_cubit.dart';
 import 'package:lifecare/const/config_key.dart';
 import 'package:lifecare/controller/common_controller.dart';
 import 'package:lifecare/controller/sensor_values_controller.dart';
@@ -51,12 +53,16 @@ class SocketController extends GetxController {
 
     socket.on("heartBeatWarning", (data) {
       sensorValueController.updateHeartBeatWarning(
-          data: SocketSensorsModel.fromJson(data));
+          data: SocketSensorsModel.fromJson(data).data);
+      Get.context!.read<ReminderHydratedCubit>().addHeartBeatAlertValue(
+          newData: SocketSensorsModel.fromJson(data).data);
     });
 
     socket.on("temperatureWarning", (data) {
       sensorValueController.updateTemperatureWarning(
-          data: SocketSensorsModel.fromJson(data));
+          data: SocketSensorsModel.fromJson(data).data);
+      Get.context!.read<ReminderHydratedCubit>().addTemperatureAlertValue(
+          newData: SocketSensorsModel.fromJson(data).data);
     });
 
     //receive new messages
