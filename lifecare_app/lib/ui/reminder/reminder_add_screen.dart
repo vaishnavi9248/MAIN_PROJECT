@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_alarm_clock/flutter_alarm_clock.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:lifecare/bloc/reminder/reminder_hydrated_cubit.dart';
 import 'package:lifecare/data/enum/days_enum.dart';
 import 'package:lifecare/data/models/reminder_model.dart';
-import 'package:lifecare/data/services/notification_service.dart';
 
 class ReminderAddScreen extends StatefulWidget {
   const ReminderAddScreen({Key? key, this.reminderModel}) : super(key: key);
@@ -91,12 +91,12 @@ class _ReminderAddScreenState extends State<ReminderAddScreen> {
                         context
                             .read<ReminderHydratedCubit>()
                             .addNewReminder(newData: data);
-                        // FlutterAlarmClock.createAlarm(
-                        //   reminderTime.hour,
-                        //   reminderTime.minute,
-                        //   title: titleController.text,
-                        // );
-                        globalNotificationService.showTimeNotification(data);
+                        FlutterAlarmClock.createAlarm(
+                          reminderTime.hour,
+                          reminderTime.minute,
+                          title: titleController.text,
+                        );
+                        //globalNotificationService.showTimeNotification(data);
                       } else {
                         context.read<ReminderHydratedCubit>().updateReminder(
                               newData: ReminderModel(

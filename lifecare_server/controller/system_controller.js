@@ -89,7 +89,7 @@ const addTemperature = (req, res) => {
             sendFCMToDevices(message, 1, "temperature", req);
 
             return res.json(data);
-          } else if (averageValue < 78 && NewData.value < 78) {
+          } else if (averageValue < 73 && NewData.value < 73) {
             const data = {
               message: "Low heat count",
               data: NewData,
