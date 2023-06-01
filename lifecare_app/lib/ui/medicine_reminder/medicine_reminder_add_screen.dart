@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_alarm_clock/flutter_alarm_clock.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:lifecare/bloc/reminder/reminder_hydrated_cubit.dart';
@@ -94,6 +95,11 @@ class _MedicineReminderAddScreenState extends State<MedicineReminderAddScreen> {
                                   medicineList: medicines,
                                 ),
                               );
+                          FlutterAlarmClock.createAlarm(
+                            reminderTime.hour,
+                            reminderTime.minute,
+                            title: titleController.text,
+                          );
                         } else {
                           context
                               .read<ReminderHydratedCubit>()

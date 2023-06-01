@@ -6,14 +6,10 @@ import 'package:intl/intl.dart';
 import 'package:lifecare/bloc/reminder/reminder_hydrated_cubit.dart';
 import 'package:lifecare/data/enum/days_enum.dart';
 import 'package:lifecare/data/models/reminder_model.dart';
-import 'package:lifecare/data/services/notification_service.dart';
 import 'package:lifecare/ui/reminder/reminder_add_screen.dart';
 
 class ReminderScreen extends StatefulWidget {
-  const ReminderScreen({Key? key, required this.notificationService})
-      : super(key: key);
-
-  final NotificationService notificationService;
+  const ReminderScreen({Key? key}) : super(key: key);
 
   @override
   State<ReminderScreen> createState() => _ReminderScreenState();

@@ -6,14 +6,10 @@ import 'package:intl/intl.dart';
 import 'package:lifecare/bloc/reminder/reminder_hydrated_cubit.dart';
 import 'package:lifecare/data/enum/days_enum.dart';
 import 'package:lifecare/data/models/medicine_reminder_model.dart';
-import 'package:lifecare/data/services/notification_service.dart';
 import 'package:lifecare/ui/medicine_reminder/medicine_reminder_add_screen.dart';
 
 class MedicineReminderScreen extends StatefulWidget {
-  const MedicineReminderScreen({Key? key, required this.notificationService})
-      : super(key: key);
-
-  final NotificationService notificationService;
+  const MedicineReminderScreen({Key? key}) : super(key: key);
 
   @override
   State<MedicineReminderScreen> createState() => _MedicineReminderScreenState();

@@ -4,6 +4,7 @@ import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:lifecare/bloc/reminder/reminder_hydrated_cubit.dart';
 import 'package:lifecare/data/enum/days_enum.dart';
 import 'package:lifecare/data/models/reminder_model.dart';
+import 'package:lifecare/data/services/notification_service.dart';
 
 class ReminderAddScreen extends StatefulWidget {
   const ReminderAddScreen({Key? key, this.reminderModel}) : super(key: key);
@@ -75,14 +76,27 @@ class _ReminderAddScreenState extends State<ReminderAddScreen> {
                   TextButton(
                     onPressed: () {
                       if (widget.reminderModel == null) {
-                        context.read<ReminderHydratedCubit>().addNewReminder(
-                              newData: ReminderModel(
-                                id: DateTime.now().microsecondsSinceEpoch,
-                                title: titleController.text,
-                                dateTime: reminderTime,
-                                repeat: days,
-                              ),
-                            );
+                        ReminderModel data = ReminderModel(
+                          id: DateTime.now().microsecondsSinceEpoch,
+                          title: titleController.text,
+                          dateTime: DateTime(
+                            reminderTime.year,
+                            reminderTime.month,
+                            reminderTime.day,
+                            reminderTime.hour,
+                            reminderTime.minute,
+                          ),
+                          repeat: days,
+                        );
+                        context
+                            .read<ReminderHydratedCubit>()
+                            .addNewReminder(newData: data);
+                        // FlutterAlarmClock.createAlarm(
+                        //   reminderTime.hour,
+                        //   reminderTime.minute,
+                        //   title: titleController.text,
+                        // );
+                        globalNotificationService.showTimeNotification(data);
                       } else {
                         context.read<ReminderHydratedCubit>().updateReminder(
                               newData: ReminderModel(

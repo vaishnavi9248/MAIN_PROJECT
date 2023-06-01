@@ -34,28 +34,20 @@ Future<void> main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  NotificationService notificationGlobalService = NotificationService();
-  await notificationGlobalService.init();
+  await globalNotificationService.init();
 
   bool isLoggedIn = await SharedPref().getBool(key: PreferenceKey.isLoggedIn);
 
-  runApp(
-    MyApp(
-      isLoggedIn: isLoggedIn,
-      notificationGlobalService: notificationGlobalService,
-    ),
-  );
+  runApp(MyApp(isLoggedIn: isLoggedIn));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({
     super.key,
     required this.isLoggedIn,
-    required this.notificationGlobalService,
   });
 
   final bool isLoggedIn;
-  final NotificationService notificationGlobalService;
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +63,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.teal,
           scaffoldBackgroundColor: Colors.white,
         ),
-        home: isLoggedIn
-            ? HomeScreen(notificationService: notificationGlobalService)
-            : LoginScreen(notificationService: notificationGlobalService),
+        home: isLoggedIn ? HomeScreen() : LoginScreen(),
       ),
     );
   }

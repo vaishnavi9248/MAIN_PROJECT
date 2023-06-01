@@ -6,6 +6,15 @@ import 'package:lifecare/util/custom_print.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+@pragma('vm:entry-point')
+void onDidReceiveBackgroundNotificationResponse(
+    NotificationResponse? notificationResponse) {
+  customDebugPrint(
+      "onDidReceiveNotificationResponse ${notificationResponse?.payload}");
+}
+
+NotificationService globalNotificationService = NotificationService();
+
 class NotificationService {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -14,10 +23,11 @@ class NotificationService {
     'high_importance_channel',
     'High Importance Notifications',
     importance: Importance.max,
+    showBadge: true,
     enableLights: true,
     enableVibration: true,
-    // playSound: true,
-    // sound: RawResourceAndroidNotificationSound("alarm"),
+    playSound: true,
+    sound: RawResourceAndroidNotificationSound("alarm"),
   );
 
   Future<void> init() async {
@@ -50,9 +60,23 @@ class NotificationService {
     const InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
+      onDidReceiveBackgroundNotificationResponse:
+          onDidReceiveBackgroundNotificationResponse,
+    );
 
     tz.initializeTimeZones();
+  }
+
+  void onDidReceiveNotificationResponse(
+      NotificationResponse? notificationResponse) {
+    clickAction(notificationResponse);
+  }
+
+  void clickAction(NotificationResponse? notificationResponse) {
+    customDebugPrint("clickAction");
   }
 
   Future<void> requestNotificationPermissions() async {
@@ -63,9 +87,11 @@ class NotificationService {
   }
 
   void firebaseOpenMessageListen() {
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      customDebugPrint("onMessageOpenedApp ${message.toMap().toString()}");
-    });
+    FirebaseMessaging.onMessageOpenedApp.listen(onData);
+  }
+
+  void onData(RemoteMessage? message) {
+    customDebugPrint("onMessageOpenedApp ${message?.toMap().toString()}");
   }
 
   void firebaseOnMessageListen() {
@@ -73,6 +99,7 @@ class NotificationService {
       customDebugPrint(
           "firebaseOnMessageListen ${message?.toMap().toString()}");
       notificationShow(message);
+      //add audio manager
     });
   }
 
@@ -89,23 +116,27 @@ class NotificationService {
         notification?.body,
         const NotificationDetails(
           android: AndroidNotificationDetails(
-              'channelId1', 'high_importance_channel',
-              importance: Importance.max,
-              priority: Priority.high,
-              enableLights: true,
-              fullScreenIntent: true,
-              enableVibration: true,
-              audioAttributesUsage: AudioAttributesUsage.alarm,
-              visibility: NotificationVisibility.public,
-              // playSound: true,
-              // sound: RawResourceAndroidNotificationSound("alarm"),
-              color: Color.fromARGB(255, 255, 0, 0),
-              ledColor: Color.fromARGB(255, 255, 0, 0),
-              ledOnMs: 1000,
-              ledOffMs: 500
-              // additionalFlags: Int32List.fromList(<int>[4]),
-              ),
+            'channelId1',
+            'high_importance_channel',
+            importance: Importance.max,
+            priority: Priority.high,
+            enableLights: true,
+            fullScreenIntent: true,
+            enableVibration: true,
+            audioAttributesUsage: AudioAttributesUsage.notificationRingtone,
+            visibility: NotificationVisibility.public,
+            playSound: true,
+            sound: RawResourceAndroidNotificationSound("alarm"),
+            color: Color.fromARGB(255, 255, 0, 0),
+            ledColor: Color.fromARGB(255, 255, 0, 0),
+            ledOnMs: 1000,
+            ledOffMs: 500,
+            styleInformation: DefaultStyleInformation(true, true),
+            channelShowBadge: true,
+            ongoing: true,
+          ),
         ),
+        payload: message?.data["type"] ?? "",
       );
     } catch (e) {
       customDebugPrint("notificationShow error $e");
@@ -120,23 +151,32 @@ class NotificationService {
     try {
       await flutterLocalNotificationsPlugin.zonedSchedule(
         reminderModel.id.hashCode,
+        "LifeCare Reminder",
         reminderModel.title,
-        "reminderModel.message",
         tz.TZDateTime.from(reminderModel.dateTime, tz.local),
-        NotificationDetails(
+        const NotificationDetails(
           android: AndroidNotificationDetails(
-            channel.id,
-            channel.name,
-            playSound: true,
-            importance: Importance.high,
+            'channelId1', 'high_importance_channel',
+            importance: Importance.max,
             priority: Priority.high,
-            sound: const UriAndroidNotificationSound("alarm"),
-            audioAttributesUsage: AudioAttributesUsage.alarm,
-            enableVibration: true,
-            //additionalFlags: Int32List.fromList(<int>[3]),
+            enableLights: true,
+            fullScreenIntent: true,
+            audioAttributesUsage: AudioAttributesUsage.notificationRingtone,
+            visibility: NotificationVisibility.public,
+            playSound: true,
+            sound: RawResourceAndroidNotificationSound("alarm"),
+            color: Color.fromARGB(255, 255, 0, 0),
+            ledColor: Color.fromARGB(255, 255, 0, 0),
+            ledOnMs: 1000,
+            ledOffMs: 500,
+            styleInformation: DefaultStyleInformation(true, true),
+            channelShowBadge: true,
+            ongoing: true,
+            autoCancel: false,
+            // additionalFlags: Int32List.fromList(<int>[4]),
           ),
         ),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        payload: "reminder",
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
       );

@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:lifecare/const/preference_key.dart';
 import 'package:lifecare/controller/sensor_values_controller.dart';
 import 'package:lifecare/controller/socket_controller.dart';
-import 'package:lifecare/data/services/notification_service.dart';
 import 'package:lifecare/data/services/shared_pref.dart';
 import 'package:lifecare/ui/alert/alert_screen.dart';
 import 'package:lifecare/ui/contacts/contacts_screen.dart';
@@ -19,14 +18,14 @@ import 'package:lifecare/ui/reports/report_screen.dart';
 import 'package:lifecare/util/show_custom_snackbar.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key, required this.notificationService}) : super(key: key);
+  HomeScreen({
+    Key? key,
+  }) : super(key: key);
 
   final SensorValuesController sensorValueController =
       Get.put(SensorValuesController());
 
   final SocketController socketController = Get.put(SocketController());
-
-  final NotificationService notificationService;
 
   @override
   Widget build(BuildContext context) {
@@ -58,15 +57,13 @@ class HomeScreen extends StatelessWidget {
                   child: const Text("Medicine Reminder"),
                   onTap: () async {
                     await Future.delayed(const Duration(milliseconds: 1));
-                    Get.to(() => MedicineReminderScreen(
-                        notificationService: notificationService));
+                    Get.to(() => const MedicineReminderScreen());
                   }),
               PopupMenuItem(
                   child: const Text("General Reminder"),
                   onTap: () async {
                     await Future.delayed(const Duration(milliseconds: 1));
-                    Get.to(() => ReminderScreen(
-                        notificationService: notificationService));
+                    Get.to(() => const ReminderScreen());
                   }),
               PopupMenuItem(
                   child: const Text("Hospitals"),
@@ -100,8 +97,7 @@ class HomeScreen extends StatelessWidget {
                     showCustomSnackBar(message: "Successfully logged-out");
                     await Future.delayed(const Duration(milliseconds: 1));
 
-                    Get.offAll(() =>
-                        LoginScreen(notificationService: notificationService));
+                    Get.offAll(() => const LoginScreen());
                     Get.deleteAll();
                   }),
             ],

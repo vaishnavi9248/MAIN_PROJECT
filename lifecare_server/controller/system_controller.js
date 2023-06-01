@@ -86,7 +86,7 @@ const addTemperature = (req, res) => {
               },
             };
 
-            sendFCMToDevices(message, 1, req);
+            sendFCMToDevices(message, 1, "temperature", req);
 
             return res.json(data);
           } else if (averageValue < 78 && NewData.value < 78) {
@@ -108,7 +108,7 @@ const addTemperature = (req, res) => {
               },
             };
 
-            sendFCMToDevices(message, 2, req);
+            sendFCMToDevices(message, 2, "temperature", req);
 
             return res.json(data);
           } else {
@@ -215,7 +215,7 @@ const addHeartbeat = (req, res) => {
               },
             };
 
-            sendFCMToDevices(message, 3, req);
+            sendFCMToDevices(message, 3, "heartBeat", req);
 
             return res.json(data);
           } else if (averageValue < 60 && NewData.value < 60) {
@@ -237,7 +237,7 @@ const addHeartbeat = (req, res) => {
               },
             };
 
-            sendFCMToDevices(message, NewData.value, req);
+            sendFCMToDevices(message, NewData.value, "heartBeat", req);
 
             return res.json(data);
           } else {
@@ -270,7 +270,7 @@ const pushButtonClicked = (req, res) => {
     },
   };
 
-  sendFCMToDevices(message, 0, req);
+  sendFCMToDevices(message, 0, "pushButton", req);
 
   const result = {
     data: "Push sent",
@@ -279,7 +279,7 @@ const pushButtonClicked = (req, res) => {
   return res.json(result);
 };
 
-sendFCMToDevices = (message, values, req) => {
+sendFCMToDevices = (message, values, type, req) => {
   const tokens = [];
 
   FCMToken.find()
@@ -289,7 +289,7 @@ sendFCMToDevices = (message, values, req) => {
       });
 
       message.tokens = tokens;
-      message.data = { values: values.toString() };
+      message.data = { values: values.toString(), type: type };
 
       req.admin
         .messaging()
