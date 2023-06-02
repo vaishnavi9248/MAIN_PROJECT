@@ -67,7 +67,7 @@ const addTemperature = (req, res) => {
           const io = req.io;
           const averageValue = parseFloat(result[0].averageValue.toFixed(2));
 
-          if (averageValue > 90 && NewData.value > 90) {
+          if (averageValue > 83 && NewData.value > 83) {
             const data = {
               message: "High heat count",
               data: NewData,
